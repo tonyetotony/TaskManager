@@ -35,7 +35,7 @@ public class ApplicationContext : DbContext
     public DbSet<ProjectAdmin> ProjectsAdmins { get; set; }
     public DbSet<Project> Projects { get; set; }
     public DbSet<Desk> Desks { get; set; }
-    public DbSet<Task> Tasks { get; set; } // Изменил на TaskEntity, чтобы избежать конфликта с ключевым словом "Task"
+    public DbSet<Task> Tasks { get; set; } 
 
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {

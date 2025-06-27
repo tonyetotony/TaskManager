@@ -21,6 +21,7 @@ await app.RunAsync();
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Api.Models;
 using TaskManager.Api.Models.Data;
+using TaskManager.Common.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

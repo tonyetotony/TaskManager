@@ -1,3 +1,5 @@
+using TaskManager.Common.Models;
+
 namespace TaskManager.Api.Models;
 
 public class User
@@ -29,6 +31,21 @@ public class User
         Photo = photo;
         RegistrationDate = DateTime.Now;
         Status = status;
+    }
+    public UserModel ToDto()
+    {
+        return new UserModel()
+        {
+            Id = this.Id,
+            FirstName = this.FirstName,
+            LastName = this.LastName,
+            Email = this.Email,
+            Password = this.Password,
+            Phone = this.Phone,
+            Photo = this.Photo,
+            RegistrationDate = this.RegistrationDate,
+            Status = this.Status
+        };
     }
     
 }
