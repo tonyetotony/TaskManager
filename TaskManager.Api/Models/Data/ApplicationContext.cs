@@ -25,7 +25,7 @@ public class ApplicationContext: DbContext
 }*/
 
 using Microsoft.EntityFrameworkCore;
-using TaskManager.Api.Models.Data;
+using TaskManager.Common.Models;
 
 namespace TaskManager.Api.Models.Data;
 
@@ -39,7 +39,15 @@ public class ApplicationContext : DbContext
 
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
-        // Не используем EnsureCreated() здесь
+        Database.EnsureCreated();
+        if (Users.Any(u => u.Status == UserStatus.Admin) == false)
+        {
+            
+            var admin = new User("anton", "pasichnichenko", "admin",
+                "qwerty123", UserStatus.Admin, "+79991234567");
+            Users.Add(admin);
+            SaveChanges();
+        }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

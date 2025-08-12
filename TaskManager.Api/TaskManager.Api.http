@@ -1,6 +1,70 @@
 @url = http://localhost:5139
 
-GET {{url}}/
+POST {{url}}/api/users/create
 Accept: application/json
+Content-Type: application/json
+
+{
+  "firstName": "Vadim",
+  "lastName": "Zaviyalov",
+  "email": "admin@example.com",
+  "password": "123",
+  "status": 0,
+  "phone": "+79991231122"
+}
+
+
+###
+
+GET {{url}}/api/users
+Accept: application/json
+Content-Type: application/json
+
+###
+
+DELETE {{url}}/api/users/delete/15
+Accept: application/json
+Content-Type: application/json
+
+###
+
+PATCH {{url}}/api/users/update/12
+Accept: application/json
+Content-Type: application/json
+
+{
+  "firstName": "anton",
+  "lastName": "pasichnichenko",
+  "email": "admin",
+  "password": "qwerty123",
+  "status": 2,
+  "phone": "+79991234567"
+}
+
+
+###
+
+POST {{url}}/api/users/create/all
+Accept: application/json
+Content-Type: application/json
+
+[
+    {
+      "firstName": "Gleb",
+      "lastName": "Orlov",
+      "email": "orlov@mail.ru",
+      "password": "1234",
+      "status": 0,
+      "phone": "+79999876543"
+    },
+    {
+      "firstName": "Martin",
+      "lastName": "Gortat",
+      "email": "gortat@mail.ru",
+      "password": "1111",
+      "status": 1,
+      "phone": "+78881112233"
+    }
+]
 
 ###

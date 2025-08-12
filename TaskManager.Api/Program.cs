@@ -24,6 +24,7 @@ using TaskManager.Api.Models.Data;
 using TaskManager.Common.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers();
 
 // Получаем строку подключения
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -35,21 +36,21 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 var app = builder.Build();
 
 app.UseHttpsRedirection();
-
+app.MapControllers();
 app.MapGet("/", () =>
 {
     
 });
 
-// Добавляем seed-данные только один раз (при запуске)
-using var scope = app.Services.CreateScope();
-var context = scope.ServiceProvider.GetService<ApplicationContext>();
-
-if (context != null && !context.Users.Any(u => u.Status == UserStatus.Admin))
-{
-    var admin = new User("anton", "pasichnichenko", "admin", "qwerty123", UserStatus.Admin);
-    context.Users.Add(admin);
-    context.SaveChanges();
-}
+// // Добавляем seed-данные только один раз (при запуске)
+// using var scope = app.Services.CreateScope();
+// var context = scope.ServiceProvider.GetService<ApplicationContext>();
+//
+// if (context != null && !context.Users.Any(u => u.Status == UserStatus.Admin))
+// {
+//     var admin = new User("anton", "pasichnichenko", "admin", "qwerty123", UserStatus.Admin);
+//     context.Users.Add(admin);
+//     context.SaveChanges();
+// }
 
 await app.RunAsync();

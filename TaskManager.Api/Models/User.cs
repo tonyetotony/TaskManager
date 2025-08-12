@@ -9,10 +9,10 @@ public class User
     public string LastName { get; set; }
     public string Email { get; set; }
     public string Password { get; set; }
-    public string Phone { get; set; }
+    public string? Phone { get; set; }
     public DateTime RegistrationDate { get; set; }
     public DateTime LastLoginDate { get; set; }
-    public byte[] Photo { get; set; }
+    public byte[]? Photo { get; set; }
     public List<Project> Projects { get; set; } = new List<Project>();
     public List<Desk> Desks { get; set; } = new List<Desk>();
     public List<Task> Tasks { get; set; } = new List<Task>();
@@ -32,6 +32,19 @@ public class User
         RegistrationDate = DateTime.Now;
         Status = status;
     }
+
+    public User(UserModel model)
+    {
+        FirstName = model.FirstName;
+        LastName = model.LastName;
+        Email = model.Email;
+        Password = model.Password;
+        Phone = model.Phone;
+        Photo = model.Photo;
+        RegistrationDate = model.RegistrationDate;
+        Status = model.Status;
+    }
+
     public UserModel ToDto()
     {
         return new UserModel()

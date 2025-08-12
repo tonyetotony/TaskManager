@@ -10,7 +10,7 @@ public class UserModel
     public string Phone { get; set; }
     public DateTime RegistrationDate { get; set; }
     public DateTime LastLoginDate { get; set; }
-    public byte[] Photo { get; set; }
+    public byte[]? Photo { get; set; }
     public UserStatus Status { get; set; }
 
     public UserModel(string firstName, string lastName, string email, string password,
