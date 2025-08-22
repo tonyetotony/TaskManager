@@ -1,29 +1,33 @@
-/*
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using TaskManager.Api.Models.Data;
-
-var builder = WebApplication.CreateBuilder(args);
-// получаем строку подключения из файла конфигурации
-string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(connectionString));
-var app = builder.Build();
-
-app.UseHttpsRedirection();
-
-app.MapGet("/", () =>
-{
-
-});
-
-await app.RunAsync();
-*/
-
-using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using TaskManager.Api.Models;
 using TaskManager.Api.Models.Data;
 using TaskManager.Common.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            // указывает, будет ли валидироваться издатель при валидации токена
+            ValidateIssuer = true,
+            // строка, представляющая издателя
+            ValidIssuer = AuthOptions.ISSUER,
+            // будет ли валидироваться потребитель токена
+            ValidateAudience = true,
+            // установка потребителя токена
+            ValidAudience = AuthOptions.AUDIENCE,
+            // будет ли валидироваться время существования
+            ValidateLifetime = true,
+            // установка ключа безопасности
+            IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+            // валидация ключа безопасности
+            ValidateIssuerSigningKey = true,
+        };
+    });
 builder.Services.AddControllers();
 
 // Получаем строку подключения
@@ -35,6 +39,8 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 
 var app = builder.Build();
 
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseHttpsRedirection();
 app.MapControllers();
 app.MapGet("/", () =>
@@ -42,15 +48,5 @@ app.MapGet("/", () =>
     
 });
 
-// // Добавляем seed-данные только один раз (при запуске)
-// using var scope = app.Services.CreateScope();
-// var context = scope.ServiceProvider.GetService<ApplicationContext>();
-//
-// if (context != null && !context.Users.Any(u => u.Status == UserStatus.Admin))
-// {
-//     var admin = new User("anton", "pasichnichenko", "admin", "qwerty123", UserStatus.Admin);
-//     context.Users.Add(admin);
-//     context.SaveChanges();
-// }
 
 await app.RunAsync();
