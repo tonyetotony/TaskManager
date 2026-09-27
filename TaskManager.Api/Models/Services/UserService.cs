@@ -94,8 +94,7 @@ public class UserService : AbstractionService, ICommonService<UserModel>
                     userForUpdate.Phone = model.Phone;
                 if (model.Photo != null && model.Photo.Length > 0)
                     userForUpdate.Photo = model.Photo;
-                if (model.Status != default(UserStatus))
-                    userForUpdate.Status = model.Status;
+                userForUpdate.Status = model.Status;
                 
                 _db.SaveChanges();
             });
