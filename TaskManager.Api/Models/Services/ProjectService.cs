@@ -29,12 +29,18 @@ public class ProjectService : AbstractionService, ICommonService<ProjectModel>
         bool result = DoAction(delegate()
         {
             Project project = _db.Projects.FirstOrDefault(p => p.Id == id);
-            project.Name = model.Name;
-            project.Description = model.Description;
-            project.Image = model.Image;
-            project.Status = model.Status;
-            project.AdminId = model.AdminId;
-            _db.Projects.Update(project);
+            if(project == null) return;
+            
+            if (!string.IsNullOrEmpty(model.Name))
+                project.Name = model.Name;
+            if (!string.IsNullOrEmpty(model.Description))
+                project.Description = model.Description;
+            if (model.Image != null && model.Image.Length > 0)
+                project.Image = model.Image;
+            if (model.Status.HasValue)
+                project.Status = model.Status.Value;
+            if (model.AdminId.HasValue && model.AdminId.Value > 0) 
+                project.AdminId = model.AdminId;
             _db.SaveChanges();
         });
         return result;
@@ -53,8 +59,15 @@ public class ProjectService : AbstractionService, ICommonService<ProjectModel>
 
     public ProjectModel Get(int id)
     {
-        Project project = _db.Projects.FirstOrDefault(p => p.Id == id);
-        return project?.ToDto();
+        Project project = _db.Projects.Include(p=> p.AllUsers).Include(p=>p.AllDesks).FirstOrDefault(p => p.Id == id);
+        var projectModel = project?.ToDto();
+        if (projectModel != null)
+        {
+            projectModel.AllUsersIds = project.AllUsers.Select(u => u.Id).ToList();
+            projectModel.AllDesksIds = project.AllDesks.Select(d => d.Id).ToList();
+        }
+            
+        return projectModel;
     }
     public async Task<IEnumerable<ProjectModel>> GetByUserId(int userId)
     {
@@ -72,24 +85,25 @@ public class ProjectService : AbstractionService, ICommonService<ProjectModel>
         return result;
     }
 
-    public IQueryable<ProjectModel> GetAll()
+    public IQueryable<CommonModel> GetAll()
     {
-        return _db.Projects.Select(p => p.ToDto());
+        return _db.Projects.Select(p => p.ToDto() as CommonModel);
     }
 
-    public void AddUserToProject(int id, List<int> userIds)
+    public void AddUsersToProject(int id, List<int> userIds)
     {
         Project project = _db.Projects.FirstOrDefault(p => p.Id == id);
         foreach (int userId in userIds)
         {
             var user = _db.Users.FirstOrDefault(u => u.Id == userId);
-            project.AllUsers.Add(user);
+            if(project.AllUsers.Contains(user) == false)
+                project.AllUsers.Add(user);
         }
         
         _db.SaveChanges();
     }
     
-    public void RemoveUserFromProject(int id, List<int> userIds)
+    public void RemoveUsersFromProject(int id, List<int> userIds)
     {
         Project project = _db.Projects.Include(p => p.AllUsers).FirstOrDefault(p => p.Id == id);
         foreach (int userId in userIds)

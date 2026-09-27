@@ -8,7 +8,10 @@ namespace TaskManager.Api.Models.Services;
 public class UserService : AbstractionService, ICommonService<UserModel>
 {
     private readonly ApplicationContext _db;
-    public UserService(ApplicationContext db) => _db = db;
+    public UserService(ApplicationContext db)
+    {
+        _db = db;
+    }
 
     public Tuple<string,string> GetUserLoginPassFromBasicAuth(HttpRequest request)
     {
@@ -79,14 +82,21 @@ public class UserService : AbstractionService, ICommonService<UserModel>
         {
             return DoAction(delegate()
             {
-                userForUpdate.FirstName = model.FirstName;
-                userForUpdate.LastName = model.LastName;
-                userForUpdate.Email = model.Email;
-                userForUpdate.Password = model.Password;
-                userForUpdate.Phone = model.Phone;
-                userForUpdate.Status = model.Status;
-                userForUpdate.Photo = model.Photo;
-                _db.Users.Update(userForUpdate);
+                if (!string.IsNullOrEmpty(model.FirstName))
+                    userForUpdate.FirstName = model.FirstName;
+                if (!string.IsNullOrEmpty(model.LastName))
+                    userForUpdate.LastName = model.LastName;
+                if (!string.IsNullOrEmpty(model.Email))
+                    userForUpdate.Email = model.Email;
+                if (!string.IsNullOrEmpty(model.Password))
+                    userForUpdate.Password = model.Password;
+                if (!string.IsNullOrEmpty(model.Phone))
+                    userForUpdate.Phone = model.Phone;
+                if (model.Photo != null && model.Photo.Length > 0)
+                    userForUpdate.Photo = model.Photo;
+                if (model.Status != default(UserStatus))
+                    userForUpdate.Status = model.Status;
+                
                 _db.SaveChanges();
             });
         }

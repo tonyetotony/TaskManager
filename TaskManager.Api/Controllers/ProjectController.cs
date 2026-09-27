@@ -24,7 +24,7 @@ public class ProjectController : ControllerBase
         _projectService = new ProjectService(db);
     }
     [HttpGet]
-    public async Task<IEnumerable<ProjectModel>> Get()
+    public async Task<IEnumerable<CommonModel>> Get()
     {
         var user = _userService.GetUser(HttpContext.User.Identity.Name);
         if (user.Status == UserStatus.Admin)
@@ -94,7 +94,7 @@ public class ProjectController : ControllerBase
     }
     
     [HttpPatch("{id}/users")]
-       public IActionResult AddUserToProject(int id, [FromBody] List<int> userIds)
+       public IActionResult AddUsersToProject(int id, [FromBody] List<int> userIds)
        {
            if (userIds != null)
            {
@@ -103,7 +103,7 @@ public class ProjectController : ControllerBase
                {
                    if (user.Status == UserStatus.Admin || user.Status == UserStatus.Editor)
                    {
-                       _projectService.AddUserToProject(id, userIds);
+                       _projectService.AddUsersToProject(id, userIds);
                        return Ok();
                    }
                    return Unauthorized();
@@ -113,7 +113,7 @@ public class ProjectController : ControllerBase
        }
        
     [HttpPatch("{id}/users/remove")]
-    public IActionResult RemoveUserFromProject(int id, [FromBody] List<int> userIds)
+    public IActionResult RemoveUsersFromProject(int id, [FromBody] List<int> userIds)
     {
         if (userIds != null)
         {
@@ -122,7 +122,7 @@ public class ProjectController : ControllerBase
             {
                 if (user.Status == UserStatus.Admin || user.Status == UserStatus.Editor)
                 {
-                    _projectService.RemoveUserFromProject(id, userIds);
+                    _projectService.RemoveUsersFromProject(id, userIds);
                     return Ok();
                 }
                 return Unauthorized();

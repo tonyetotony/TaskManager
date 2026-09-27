@@ -14,9 +14,9 @@ public class Project: CommonObject
 
     public Project(ProjectModel projectModel) : base(projectModel)
     {
-        Id = projectModel.Id;
+        //Id = projectModel.Id;
         AdminId = projectModel.AdminId;
-        Status = projectModel.Status;
+        Status = projectModel.Status ?? ProjectStatus.InProgress;
     }
 
     public ProjectModel ToDto()

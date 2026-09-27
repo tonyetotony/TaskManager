@@ -17,7 +17,7 @@ public class CommonObject
     {
         Name = model.Name;
         Description = model.Description;
-        CreationDate = model.CreationDate;
-        Image = model.Image;
+        CreationDate = model.CreationDate == default ? DateTime.Now : model.CreationDate;
+        Image = model.Image ?? Array.Empty<byte>();
     }
 }

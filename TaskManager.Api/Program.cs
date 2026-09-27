@@ -30,10 +30,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 builder.Services.AddControllers();
 
-// Получаем строку подключения
+
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// Регистрируем контекст БД
+
 builder.Services.AddDbContext<ApplicationContext>(options => 
     options.UseSqlServer(connectionString));
 
