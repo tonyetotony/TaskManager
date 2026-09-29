@@ -1,8 +1,10 @@
 using System;
+using System.Net;
 using JetBrains.Annotations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TaskManager.Client.Models;
 using TaskManager.Client.Services;
+using TaskManager.Common.Models;
 
 namespace TaskManager.Client.Tests.Services;
 
@@ -39,5 +41,32 @@ public class TasksRequestServiceTest
     {
         var tasks = _service.GetTasksByDesk(_token, 2);
         Assert.AreNotEqual(0, tasks.Count);
+    }
+    
+    [TestMethod]
+    public void CreateTest()
+    {
+        TaskModel task = new TaskModel("Задача тест", "задача из тестов", DateTime.Now, DateTime.Now,"New");
+        task.DeskId = 3;
+        task.ExecutorId = 1;
+        var result = _service.Create(_token, task);
+        Assert.AreEqual(HttpStatusCode.OK, result);
+    }
+    
+    [TestMethod]
+    public void UpdateTest()
+    {
+        TaskModel task = new TaskModel("Задача тест update", "задача из тестов upd", DateTime.Now, DateTime.Now,"In Progress");
+        task.Id = 15;
+        task.ExecutorId = 13;
+        var result = _service.Update(_token, task);
+        Assert.AreEqual(HttpStatusCode.OK, result);
+    }
+    
+    [TestMethod]
+    public void DeleteTest()
+    {
+        var result = _service.Delete(_token, 15);
+        Assert.AreEqual(HttpStatusCode.OK, result);
     }
 }
