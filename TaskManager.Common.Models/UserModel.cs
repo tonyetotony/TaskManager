@@ -26,4 +26,9 @@ public class UserModel
         Photo = photo;
     }
     public UserModel() { }
+
+    public override string ToString()
+    {
+        return $"{FirstName} {LastName}";
+    }
 }

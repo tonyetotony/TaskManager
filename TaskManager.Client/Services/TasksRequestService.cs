@@ -12,9 +12,19 @@ public class TasksRequestService : CommonRequestService
     
     public List<TaskModel> GetTasksForCurrentUser(AuthToken token)
     {
-        string responce = GetDataByUrl(HttpMethod.Get, _tasksControllerUrl + "/user", token);
-        List<TaskModel> tasks = JsonConvert.DeserializeObject<List<TaskModel>>(responce);
-        return tasks;
+        try
+        {
+            string responce = GetDataByUrl(HttpMethod.Get, _tasksControllerUrl + "/user", token);
+            if (string.IsNullOrEmpty(responce))
+                return new List<TaskModel>();
+                
+            List<TaskModel> tasks = JsonConvert.DeserializeObject<List<TaskModel>>(responce);
+            return tasks ?? new List<TaskModel>();
+        }
+        catch
+        {
+            return new List<TaskModel>();
+        }
     }
     
     public TaskModel Get(AuthToken token, int taskId)

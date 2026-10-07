@@ -20,6 +20,33 @@ public class UsersRequestService : CommonRequestService
         AuthToken token = JsonConvert.DeserializeObject<AuthToken>(resultStr);
         return token;
     }
+    
+    public UserModel GetCurrentUser(AuthToken token)
+    {
+        string responce = GetDataByUrl(HttpMethod.Get, HOST + "account/info", token);
+        UserModel user = JsonConvert.DeserializeObject<UserModel>(responce);
+        return user;
+    }
+    
+    public UserModel GetUserById(AuthToken token, int userId)
+    {
+        try
+        {
+            if (userId <= 0)
+                return null;
+                
+            string responce = GetDataByUrl(HttpMethod.Get, _usersControllerUrl + $"/{userId}", token);
+            if (string.IsNullOrEmpty(responce))
+                return null;
+                
+            UserModel user = JsonConvert.DeserializeObject<UserModel>(responce);
+            return user;
+        }
+        catch
+        {
+            return null;
+        }
+    }
 
     public HttpStatusCode CreateUser(AuthToken token, UserModel user)
     {

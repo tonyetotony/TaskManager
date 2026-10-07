@@ -31,14 +31,14 @@ public class TasksController : ControllerBase
     }
     
     [HttpGet("user")]
-    public async Task<IEnumerable<CommonModel>> GetTasksForCurrentUser()
+    public async Task<IEnumerable<TaskModel>> GetTasksForCurrentUser()
     {
         var user = _userService.GetUser(HttpContext.User.Identity.Name);
         if (user != null)
         {
             return await _taskService.GetTasksForUser(user.Id).ToListAsync();
         }
-        return Array.Empty<CommonModel>();      
+        return Array.Empty<TaskModel>();      
     }
 
     [HttpGet("{id}")]

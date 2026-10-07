@@ -89,13 +89,13 @@ public class TaskService : AbstractionService, ICommonService<TaskModel>
         return task?.ToDto();
     }
 
-    public IQueryable<CommonModel> GetTasksForUser(int userId)
+    public IQueryable<TaskModel> GetTasksForUser(int userId)
     {
-        return _db.Tasks.Where(t=>t.CreatorId == userId || t.ExecutorId == userId).Select(t=>t.ToDto() as CommonModel);
+        return _db.Tasks.Where(t=>t.CreatorId == userId || t.ExecutorId == userId).Select(t=>t.ToDto());
     }
 
-    public IQueryable<CommonModel> GetAll(int deskId)
+    public IQueryable<TaskModel> GetAll(int deskId)
     {
-        return _db.Tasks.Where(t=>t.DeskId == deskId).Select(t => t.ToDto() as CommonModel);
+        return _db.Tasks.Where(t=>t.DeskId == deskId).Select(t => t.ToDto());
     }
 }

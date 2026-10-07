@@ -16,6 +16,7 @@ public abstract class CommonRequestService
         string result = string.Empty;
         HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
         request.Method = method.Method;
+        request.Credentials = CredentialCache.DefaultCredentials;
         
         if (username != null && password != null)
         {
@@ -28,11 +29,15 @@ public abstract class CommonRequestService
             request.Headers.Add("Authorization", "Bearer " + token.access_token);
         }
 
-        HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-        using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8)) 
-        { 
-            string responseStr = reader.ReadToEnd(); 
-            result = responseStr;
+        using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+        {
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8)) 
+                { 
+                    result = reader.ReadToEnd(); 
+                }
+            }
         }
         return result;
     }
