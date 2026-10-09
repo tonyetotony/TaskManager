@@ -3,6 +3,7 @@
     <Brush x:Key="commonBlueColor">#0696d7</Brush>
     <Brush x:Key="commonRedColor">Red</Brush>
     <Brush x:Key="commonGreyColor">Gray</Brush>
+    <Brush x:Key="commonGreenColor">Green</Brush>
     <FontStyle x:Key="commonFontStyle">Normal</FontStyle>
     
     <Style TargetType="TextBox" x:Key="commonTBox">
@@ -19,6 +20,12 @@
                 <Setter Property="CornerRadius" Value="3"></Setter>
             </Style>
         </Style.Resources>
+    </Style>
+    
+    <Style TargetType="TextBox" x:Key="multilineTBox" BasedOn="{StaticResource commonTBox}">
+        <Setter Property="Height" Value="Auto"></Setter>
+        <Setter Property="TextWrapping" Value="Wrap"></Setter>
+        <Setter Property="MinHeight" Value="60"></Setter>
     </Style>
     
     <Style TargetType="PasswordBox" x:Key="commonPBox">
@@ -51,6 +58,10 @@
         </Style.Resources>
     </Style>
     
+    <Style TargetType="Button" x:Key="commonBtnRed" BasedOn="{StaticResource commonBtn}">
+        <Setter Property="Background" Value="{StaticResource commonRedColor}"></Setter>
+    </Style>
+    
     <Style TargetType="TextBlock" x:Key="sharedTBlock">
         <Setter Property="FontStyle" Value="{StaticResource commonFontStyle}"></Setter>
         <Setter Property="HorizontalAlignment" Value="Center"></Setter>
@@ -75,14 +86,24 @@
         <Setter Property="BorderBrush" Value="{StaticResource commonGreyColor}"></Setter>
     </Style> 
     
-    <Style TargetType="Border" x:Key="projectPanelBorder">
-        <Setter Property="Background" Value="GhostWhite"></Setter>
+    <Style TargetType="Border" x:Key="commonPanelBorder">
         <Setter Property="BorderBrush" Value="{StaticResource commonBlueColor}"></Setter>
         <Setter Property="Margin" Value="10"></Setter>
         <Setter Property="Padding" Value="10"></Setter>
         <Setter Property="BorderThickness" Value="1"></Setter>
         <Setter Property="CornerRadius" Value="3"></Setter>
         <Setter Property="Width" Value="200"></Setter>
+    </Style>
+    
+    <Style TargetType="Border" x:Key="projectPanelBorder" BasedOn="{StaticResource commonPanelBorder}">
+        <Setter Property="Background" Value="GhostWhite"></Setter>
     </Style> 
     
+    <Style TargetType="Border" x:Key="deskPanelBorder" BasedOn="{StaticResource commonPanelBorder}">
+        <Setter Property="Background" Value="#edfff2"></Setter>
+    </Style>
+    
+    <Style TargetType="CheckBox" x:Key="commonChBox">
+        <Setter Property="BorderBrush" Value="{StaticResource commonGreenColor}"/>
+    </Style>
 </ResourceDictionary>
