@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using TaskManager.Client.Models;
 using TaskManager.Client.Services;
 using TaskManager.Client.Views.AddWindows;
+using TaskManager.Client.Views.Pages;
 using TaskManager.Common.Models;
 
 namespace TaskManager.Client.ViewModels;
@@ -12,6 +13,7 @@ public class ProjectDesksPageViewModel : BindableBase
     private DesksRequestService _desksRequestService;
     private UsersRequestService _userRequestService;
     private DesksViewService _desksViewService;
+    private MainWindowViewModel _mainWindowVM;
     
     #region COMMANDS
 
@@ -22,13 +24,16 @@ public class ProjectDesksPageViewModel : BindableBase
     public DelegateCommand SelectImageForDeskCommand { get; private set; }
     public DelegateCommand AddNewColumnItemCommand { get; private set; }
     public DelegateCommand<object> RemoveColumnItemCommand { get; private set; }
+    public DelegateCommand<object> OpenDeskTasksPageCommand { get; private set; }
 
     #endregion
 
-    public ProjectDesksPageViewModel(AuthToken token, ProjectModel project)
+    public ProjectDesksPageViewModel(AuthToken token, ProjectModel project, MainWindowViewModel mainWindowVM)
     {
         _token = token;
         _project = project;
+        _mainWindowVM = mainWindowVM;
+        
         _desksRequestService = new DesksRequestService();
         _viewService = new CommonViewService();
         _userRequestService = new UsersRequestService();
@@ -43,7 +48,8 @@ public class ProjectDesksPageViewModel : BindableBase
         SelectImageForDeskCommand = new DelegateCommand(SelectImageForDesk);
         AddNewColumnItemCommand = new DelegateCommand(AddNewColumnItem);
         RemoveColumnItemCommand = new DelegateCommand<object>(RemoveColumnItem);
-        
+        OpenDeskTasksPageCommand = new DelegateCommand<object>(OpenDeskTasksPage);
+
     }
 
     #region PROPERTIES
@@ -187,7 +193,7 @@ public class ProjectDesksPageViewModel : BindableBase
     
     private void SelectImageForDesk()
     {
-        _desksViewService.SelectImageForDesk(SelectedDesk);
+        SelectedDesk = _desksViewService.SelectImageForDesk(SelectedDesk);
     }
 
     private void AddNewColumnItem()
@@ -200,6 +206,13 @@ public class ProjectDesksPageViewModel : BindableBase
         var itemToRemove = (ColumnBindingHelp)item;
         ColumnsForNewDesk.Remove(itemToRemove);
     }
-    
+
+    private void OpenDeskTasksPage(object deskId)
+    {
+        SelectedDesk = _desksViewService.GetDeskClientById(deskId);
+        var page = new DeskTasksPage();
+        var context = new DeskTasksPageViewModel(_token, SelectedDesk.Model, page);
+        _mainWindowVM.OpenPage(page, $"Task of {SelectedDesk.Model.Name}",context);
+    }
     
 }

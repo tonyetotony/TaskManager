@@ -103,6 +103,13 @@
         <Setter Property="Background" Value="#edfff2"></Setter>
     </Style>
     
+    <Style TargetType="Border" x:Key="taskPanelBorder" BasedOn="{StaticResource commonPanelBorder}">
+        <Setter Property="Background" Value="#bddeff"></Setter>
+        <Setter Property="Cursor" Value="Hand"></Setter>
+        <Setter Property="Margin" Value="0,10"></Setter>
+        <Setter Property="Padding" Value="0"></Setter>
+    </Style>
+    
     <Style TargetType="CheckBox" x:Key="commonChBox">
         <Setter Property="BorderBrush" Value="{StaticResource commonGreenColor}"/>
     </Style>

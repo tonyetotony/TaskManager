@@ -282,7 +282,7 @@ public class ProjectsPageViewModel : BindableBase
         if (SelectedProject?.Model != null)
         {
             var page = new ProjectDesksPage();
-            _mainWindowVM.OpenPage(page, $"Desk of {SelectedProject.Model.Name}", new ProjectDesksPageViewModel(_token, SelectedProject.Model));
+            _mainWindowVM.OpenPage(page, $"Desk of {SelectedProject.Model.Name}", new ProjectDesksPageViewModel(_token, SelectedProject.Model, _mainWindowVM));
         }
     }
     

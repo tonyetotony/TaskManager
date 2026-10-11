@@ -36,9 +36,9 @@ public class TasksRequestService : CommonRequestService
     
     public List<TaskModel> GetTasksByDesk(AuthToken token, int deskId)
     {
-        string responce = GetDataByUrl(HttpMethod.Get, _tasksControllerUrl + "?deskId=3", token);
+        string responce = GetDataByUrl(HttpMethod.Get, _tasksControllerUrl + $"?deskId={deskId}", token);
         List<TaskModel> tasks = JsonConvert.DeserializeObject<List<TaskModel>>(responce);
-        return tasks;
+        return tasks ?? new List<TaskModel>();
     }
     
     public HttpStatusCode Create(AuthToken token, TaskModel task)

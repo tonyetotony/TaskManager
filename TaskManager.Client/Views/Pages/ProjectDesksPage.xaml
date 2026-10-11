@@ -48,7 +48,7 @@
                                         Style="{StaticResource commonBtn}">
                                 </Button>
                                 <Button Grid.Row="2" Content="Open"
-                                        Command="{Binding Path=DataContext.ShowDeskTasksCommand, 
+                                        Command="{Binding Path=DataContext.OpenDeskTasksPageCommand, 
                                                            RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                         CommandParameter="{Binding Path=Model.Id}"
                                         Style="{StaticResource commonBtn}" />
