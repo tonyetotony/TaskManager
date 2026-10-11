@@ -46,7 +46,7 @@
                     </Grid.RowDefinitions>
                     <Image Grid.Row="0" Source="{Binding SelectedDesk.Image}"/>
                     <Button Grid.Row="1" Content="Select"
-                            Command="{Binding SelectPhotoForDeskCommand}"
+                            Command="{Binding SelectImageForDeskCommand}"
                             Style="{StaticResource commonBtn}"/>
                 </Grid>
                 
@@ -59,7 +59,8 @@
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBox Text="{Binding Value}" Width="150" Style="{StaticResource commonTBox}"/>
-                                        <Button Content="-" Command="{Binding RemoveColumnItemCommand}"
+                                        <Button Content="-" Command="{Binding Path=DataContext.RemoveColumnItemCommand,
+                                                RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                 CommandParameter="{Binding}"
                                                 Style="{StaticResource commonBtnRed}"/>
                                         
@@ -73,7 +74,8 @@
                 <TextBlock Grid.Row="4" Grid.Column="0" Text="Isprivate: "
                            Style="{StaticResource commonTBlock}"
                            HorizontalAlignment="Right"/>
-                <CheckBox Grid.Row="4" Grid.Column="1" IsChecked="{Binding SelectedDesk.Model.Isprivate}"/>
+                <CheckBox Grid.Row="4" Grid.Column="1" IsChecked="{Binding SelectedDesk.Model.Isprivate}"
+                          Style="{StaticResource commonChBox}"/>
             </Grid>
         </ScrollViewer>
         <Grid Grid.Row="2">

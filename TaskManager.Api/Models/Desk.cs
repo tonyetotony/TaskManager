@@ -19,6 +19,8 @@ public class Desk: CommonObject
         AdminId = deskModel.AdminId;
         IsPrivate = deskModel.IsPrivate;
         ProjectId = deskModel.ProjectId;
+        Image = deskModel.Image;
+        
         if(deskModel.Columns.Any())
             Columns = "[" + string.Join(",", deskModel.Columns) + "]";
         

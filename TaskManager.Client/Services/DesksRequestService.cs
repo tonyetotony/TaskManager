@@ -26,9 +26,9 @@ public class DesksRequestService : CommonRequestService
     
     public List<DeskModel> GetProjectDesks(AuthToken token, int projectId)
     {
-        string responce = GetDataByUrl(HttpMethod.Get, _desksControllerUrl + "/project?projectId=19", token);
+        string responce = GetDataByUrl(HttpMethod.Get, _desksControllerUrl + $"/project?projectId={projectId}", token);
         List<DeskModel> desks = JsonConvert.DeserializeObject<List<DeskModel>>(responce);
-        return desks;
+        return desks ?? new List<DeskModel>();
     }
     
     public HttpStatusCode Create(AuthToken token, DeskModel desk)

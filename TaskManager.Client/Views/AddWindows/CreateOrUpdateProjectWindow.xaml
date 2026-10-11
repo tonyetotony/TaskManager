@@ -38,35 +38,35 @@
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Name: "
-                           Style="{StaticResource commonTBlock}" HorizontalAlignment="Right"/>
+                           Style="{StaticResource commonTBlock}" HorizontalAlignment="Right" />
                 <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedProject.Model.Name}"
-                           Style="{StaticResource commonTBox}"/>
-                
+                         Style="{StaticResource commonTBox}" />
+
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Description: "
-                           Style="{StaticResource commonTBlock}" HorizontalAlignment="Right"/>
+                           Style="{StaticResource commonTBlock}" HorizontalAlignment="Right" />
                 <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedProject.Model.Description}"
-                           Style="{StaticResource multilineTBox}"/>
-                
+                         Style="{StaticResource multilineTBox}" />
+
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Photo: "
-                           Style="{StaticResource commonTBlock}" HorizontalAlignment="Right"/>
+                           Style="{StaticResource commonTBlock}" HorizontalAlignment="Right" />
                 <Grid Grid.Row="2" Grid.Column="1">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="30" />
                     </Grid.RowDefinitions>
-                    <Image Grid.Row="0" Source="{Binding SelectedProject.Image}"/>
+                    <Image Grid.Row="0" Source="{Binding SelectedProject.Image}" />
                     <Button Grid.Row="1" Content="Select"
                             Command="{Binding SelectPhotoForProjectCommand}"
-                            Style="{StaticResource commonBtn}"/>
+                            Style="{StaticResource commonBtn}" />
                 </Grid>
-                
+
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Status: "
-                           Style="{StaticResource commonTBlock}" HorizontalAlignment="Right"/>
+                           Style="{StaticResource commonTBlock}" HorizontalAlignment="Right" />
                 <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
-                          SelectedIndex="{Binding SelectedProject.Model.Status}"/>
+                          SelectedIndex="{Binding SelectedProject.Model.Status}" />
             </Grid>
         </ScrollViewer>
-        
+
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -84,7 +84,8 @@
                 </Button.Style>
             </Button>
             <Button Grid.Column="1" Content="Save" Command="{Binding CreateOrUpdateProjectCommand}"
-                    Style="{StaticResource commonBtn}"></Button>
+                    Style="{StaticResource commonBtn}">
+            </Button>
         </Grid>
     </Grid>
 </Window>
