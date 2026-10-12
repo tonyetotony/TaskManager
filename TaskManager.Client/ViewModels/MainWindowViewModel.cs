@@ -169,7 +169,8 @@ public class MainWindowViewModel : BindableBase
     private void OpenUsersManagement()
     {
         SelectedPageName = _manageUsersBtnName;
-        _viewService.ShowMessage(_manageUsersBtnName);
+        var page = new UsersPage();
+        OpenPage(page, _manageUsersBtnName, new UsersPageViewModel(Token));
     }
 
     #endregion

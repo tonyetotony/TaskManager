@@ -7,9 +7,14 @@
              xmlns:client="clr-namespace:TaskManager.Client"
              mc:Ignorable="d"
              d:DesignHeight="200" d:DesignWidth="200">
-    <Grid>
-        <Border Style="{StaticResource taskPanelBorder}">
-            <Grid>
+ 
+    
+    <Border Style="{StaticResource taskPanelBorder}"
+            MouseLeftButtonDown="TaskBorder_MouseLeftButtonDown"
+            MouseEnter="TaskBorder_MouseEnter"
+            MouseLeave="TaskBorder_MouseLeave"
+            Cursor="Hand">
+        <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -47,7 +52,7 @@
                                Style="{StaticResource commonTBlock}"/>
                     <DatePickerTextBox Text="{Binding Path=Model.EndDate}" IsReadOnly="True"/>
                 </StackPanel>
-            </Grid>
-        </Border>
-    </Grid>
+            
+        </Grid>
+   </Border>
 </UserControl>

@@ -133,6 +133,12 @@ public class UserService : AbstractionService, ICommonService<UserModel>
         return userForUpdate?.ToDto();
        
     }
+    
+    public ProjectAdmin GetProjectAdmin(int userId)
+    {
+        ProjectAdmin admin = _db.ProjectsAdmins.FirstOrDefault(a => a.UserId == userId);
+        return admin;
+    }
 
     public IEnumerable<UserModel> GetAllByIds(List<int> userIds)
     {

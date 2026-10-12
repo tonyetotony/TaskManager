@@ -153,10 +153,18 @@ public class ProjectsPageViewModel : BindableBase
     private void OpenUpdateProject(object projectId)
     { 
         SelectedProject = GetProjectClientById(projectId);
-        TypeActionWithProject = ClientAction.Update;
-        
-        var wnd = new CreateOrUpdateProjectWindow();
-        _viewService.OpenWindow(wnd, this);
+        var adminId = _usersRequestService.GetProjectUserAdmin(_token, CurrentUser.Id);
+        if(adminId == SelectedProject.Model.AdminId)
+        {
+            TypeActionWithProject = ClientAction.Update;
+
+            var wnd = new CreateOrUpdateProjectWindow();
+            _viewService.OpenWindow(wnd, this);
+        }
+        else
+        {
+            _viewService.ShowMessage("You are not admin!");
+        }
     }
     
     private void ShowProjectInfo(object projectId)

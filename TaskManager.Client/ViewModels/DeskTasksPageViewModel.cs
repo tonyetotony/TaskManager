@@ -1,12 +1,15 @@
 using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 using TaskManager.Client.Models;
 using TaskManager.Client.Services;
 using TaskManager.Client.Views.AddWindows;
 using TaskManager.Client.Views.Components;
 using TaskManager.Client.Views.Pages;
 using TaskManager.Common.Models;
+using static System.Windows.Media.VisualTreeHelper;
 
 namespace TaskManager.Client.ViewModels;
 
@@ -193,6 +196,69 @@ public class DeskTasksPageViewModel : BindableBase
         _viewService.CurrentOpenedWindow?.Close();
     }
 
+    private void ColumnBorder_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+    {
+        if (sender is Border border)
+        {
+            border.BorderBrush = new SolidColorBrush(Color.FromRgb(100, 149, 237));
+            border.Background = new SolidColorBrush(Color.FromRgb(240, 248, 255));
+        }
+    }
+
+    private void ColumnBorder_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+    {
+        if (sender is Border border)
+        {
+            border.BorderBrush = new SolidColorBrush(Color.FromRgb(200, 200, 200));
+            border.Background = null;
+        }
+    }
+
+    private void HandleTaskDrop(object sender, System.Windows.DragEventArgs e, string targetColumn)
+    {
+        ColumnBorder_Drop(sender, e, targetColumn);
+    }
+
+    private void ColumnBorder_Drop(object sender, System.Windows.DragEventArgs e, string targetColumn)
+    {
+        if (e.Data.GetDataPresent("TaskData"))
+        {
+            var taskClient = e.Data.GetData("TaskData") as TaskClient;
+            if (taskClient != null)
+            {
+                // Check if task has valid ID
+                if (taskClient.Model.Id == 0)
+                {
+                    _viewService.ShowMessage("Task ID is not set. Please save the task first.");
+                    return;
+                }
+
+                var oldColumn = taskClient.Model.Column;
+                
+                if (oldColumn == targetColumn)
+                {
+                    return; // Task is already in this column
+                }
+
+                taskClient.Model.Column = targetColumn;
+
+                // Save to server
+                var result = _tasksRequestService.Update(_token, taskClient.Model);
+                if (result == System.Net.HttpStatusCode.OK)
+                {
+                    _viewService.ShowMessage($"Task moved from '{oldColumn}' to '{targetColumn}'");
+                    UpdatePage();
+                }
+                else
+                {
+                    _viewService.ShowMessage($"Failed to save task. Status: {result}");
+                    // Revert the change
+                    taskClient.Model.Column = oldColumn;
+                }
+            }
+        }
+    }
+
     private void OpenNewTask()
     {
         TypeActionWithTask = ClientAction.Create;
@@ -244,16 +310,31 @@ public class DeskTasksPageViewModel : BindableBase
             
             grid.Children.Add(header);
             
-            //column with scroll
+            //column with scroll and drop zone
+            var columnBorder = new Border
+            {
+                BorderBrush = new SolidColorBrush(Color.FromRgb(200, 200, 200)),
+                BorderThickness = new Thickness(2),
+                CornerRadius = new CornerRadius(5),
+                Margin = new Thickness(5),
+                MinHeight = 300,
+                Padding = new Thickness(5)
+            };
+
             var scrollViewer = new ScrollViewer
             {
                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-                MinHeight = 300
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
             };
-            
+
+            // Add drag-drop events to the column
+            columnBorder.AllowDrop = true;
+            columnBorder.Drop += (s, e) => HandleTaskDrop(s, e, column.Key);
+            columnBorder.MouseEnter += ColumnBorder_MouseEnter;
+            columnBorder.MouseLeave += ColumnBorder_MouseLeave;
+
             var stackPanel = new StackPanel();
-            
+
             var tasksViews = new List<TaskControl>();
 
             foreach (var task in column.Value)
@@ -263,17 +344,20 @@ public class DeskTasksPageViewModel : BindableBase
                 tasksViews.Add(taskView);
                 stackPanel.Children.Add(taskView);
             }
-            
+
             scrollViewer.Content = stackPanel;
-            Grid.SetRow(scrollViewer, 1);
-            Grid.SetColumn(scrollViewer, columnCount);
-            grid.Children.Add(scrollViewer);
+            columnBorder.Child = scrollViewer;
+
+            Grid.SetRow(columnBorder, 1);
+            Grid.SetColumn(columnBorder, columnCount);
+            grid.Children.Add(columnBorder);
             
             columnCount++;
         }
 
         return grid;
     }
+
     
     
     #endregion

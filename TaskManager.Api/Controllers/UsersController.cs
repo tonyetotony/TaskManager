@@ -83,5 +83,12 @@ namespace TaskManager.Api.Controllers
             }
             return BadRequest();
         }
+        
+        [HttpGet("{id}/admin")]
+        public ActionResult<int?> GetProjectAdminId(int id)
+        {
+            var admin = _userService.GetProjectAdmin(id);
+            return admin == null ? NotFound(null) : Ok(admin.Id);
+        }
     }
 }
