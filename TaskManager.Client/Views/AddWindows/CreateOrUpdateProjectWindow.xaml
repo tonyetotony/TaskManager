@@ -63,7 +63,7 @@
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Status: "
                            Style="{StaticResource commonTBlock}" HorizontalAlignment="Right" />
                 <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
-                          SelectedIndex="{Binding SelectedProject.Model.Status}" />
+                          SelectedItem="{Binding SelectedProject.Model.Status}" />
             </Grid>
         </ScrollViewer>
 

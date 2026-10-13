@@ -4,32 +4,174 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:TaskManager.Client.Views.Pages"
+      xmlns:models="clr-namespace:TaskManager.Common.Models"
       mc:Ignorable="d"
-      Title="UserTasksPage" Height="450" Width="800">
-    <Grid>
-        <ListView ItemsSource="{Binding AllDesks}" SelectedItem="{Binding SelectedDesk}"
-                  SelectionMode="Single">
-            <ListView.ContextMenu>
-                <ContextMenu ItemsSource="{Binding ContextMenuCommands}">
-                    <ContextMenu.ItemTemplate>
-                        <DataTemplate>
-                            <MenuItem Header="{Binding Key}" Command="{Binding Value}"/>
-                        </DataTemplate>
-                    </ContextMenu.ItemTemplate>
-                </ContextMenu>
-            </ListView.ContextMenu>
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="ID" 
-                                    DisplayMemberBinding="{Binding Path=Model.Id}"/>
-                    <GridViewColumn Header="Name" 
-                                    DisplayMemberBinding="{Binding Path=Model.Name}"/>
-                    <GridViewColumn Header="Description"
-                                    DisplayMemberBinding="{Binding Path=Model.Description}"/>
-                       
-                    
-                </GridView>
-            </ListView.View>
-        </ListView>
-    </Grid>
+      Title="Мои доски"
+      d:DesignHeight="600" d:DesignWidth="800">
+    <Page.Resources>
+        <!-- Тень для карточки -->
+        <DropShadowEffect x:Key="CardShadow" 
+                         Direction="270" 
+                         ShadowDepth="5" 
+                         BlurRadius="15" 
+                         Opacity="0.2"/>
+    </Page.Resources>
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="30">
+            <!-- Заголовок -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,30">
+                <TextBlock Text="📋" FontSize="28" Margin="0,0,10,0"/>
+                <TextBlock Text="Мои доски" 
+                          FontSize="28" 
+                          FontWeight="Bold" 
+                          Foreground="#2C3E50"/>
+            </StackPanel>
+            
+            <!-- Кнопка создания доски -->
+            <Button Content="➕ Создать доску" 
+                   Style="{StaticResource commonBtn}"
+                   Height="45"
+                   FontSize="15"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,25"
+                   HorizontalAlignment="Left"
+                   Command="{Binding CreateDeskCommand}"/>
+            
+            <!-- Если досок нет -->
+            <StackPanel Visibility="Collapsed">
+                <Border Background="#F8F9FA" 
+                       CornerRadius="12" 
+                       Padding="40"
+                       BorderBrush="#ECF0F1"
+                       BorderThickness="2">
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="📭" FontSize="60" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                        <TextBlock Text="У вас пока нет досок" 
+                                  FontSize="18" 
+                                  Foreground="#7F8C8D"
+                                  HorizontalAlignment="Center"/>
+                        <TextBlock Text="Создайте первую доску для начала работы" 
+                                  FontSize="14" 
+                                  Foreground="#BDC3C7"
+                                  HorizontalAlignment="Center"
+                                  Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+            
+            <!-- Карточки досок -->
+            <ItemsControl ItemsSource="{Binding AllDesks}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="White" 
+                               CornerRadius="12" 
+                               Padding="20"
+                               Effect="{StaticResource CardShadow}"
+                               Margin="0,0,20,20"
+                               Width="280">
+                            <StackPanel>
+                                <!-- Иконка доски -->
+                                <Border Width="50" 
+                                       Height="50" 
+                                       Background="#0696d7" 
+                                       CornerRadius="25"
+                                       Margin="0,0,0,15">
+                                    <TextBlock Text="📋" 
+                                              FontSize="24" 
+                                              HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"
+                                              Foreground="White"/>
+                                </Border>
+                                
+                                <!-- Название доски -->
+                                <TextBlock Text="{Binding Model.Name}" 
+                                          FontSize="16" 
+                                          FontWeight="Bold" 
+                                          Foreground="#2C3E50"
+                                          Margin="0,0,0,8"/>
+                                
+                                <!-- Описание -->
+                                <TextBlock Text="{Binding Model.Description}" 
+                                          FontSize="13" 
+                                          Foreground="#7F8C8D"
+                                          TextWrapping="Wrap"
+                                          Margin="0,0,0,15"
+                                          MaxHeight="60">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Model.Description}" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Model.Description}" Value="">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                
+                                <Border Height="1" Background="#ECF0F1" Margin="0,0,0,15"/>
+                                
+                                <!-- Информация о доске -->
+                                <StackPanel>
+                                    <!-- Статус приватности -->
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                        <Border Width="24" Height="24" Background="#E8F4F8" CornerRadius="12" Margin="0,0,8,0">
+                                            <TextBlock Text="🔒" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Text="{Binding Model.IsPrivate, StringFormat={}{0}}" 
+                                                  FontSize="12" 
+                                                  Foreground="#7F8C8D"/>
+                                    </StackPanel>
+                                    
+                                    <!-- Дата создания -->
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Width="24" Height="24" Background="#E8F4F8" CornerRadius="12" Margin="0,0,8,0">
+                                            <TextBlock Text="📅" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Text="{Binding Model.CreationDate, StringFormat={}{0:dd.MM.yyyy}}" 
+                                                  FontSize="12" 
+                                                  Foreground="#7F8C8D"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                
+                                <Border Height="1" Background="#ECF0F1" Margin="0,15,0,15"/>
+                                
+                                <!-- Кнопки действий -->
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="✏️" 
+                                           Style="{StaticResource commonBtn}"
+                                           Width="35"
+                                           Height="35"
+                                           Padding="0"
+                                           FontSize="14"
+                                           Margin="0,0,8,0"
+                                           Command="{Binding DataContext.EditDeskCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                           CommandParameter="{Binding}"/>
+                                    
+                                    <Button Content="🗑️" 
+                                           Style="{StaticResource commonBtnRed}"
+                                           Width="35"
+                                           Height="35"
+                                           Padding="0"
+                                           FontSize="14"
+                                           Command="{Binding DataContext.DeleteDeskCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                           CommandParameter="{Binding}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
 </Page>

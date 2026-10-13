@@ -4,51 +4,143 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:TaskManager.Client.Views"
-        mc:Ignorable="d"
-        Title="Login" Height="300" Width="300"
-        ResizeMode="NoResize"
         xmlns:prism="http://prismlibrary.com/"
+        mc:Ignorable="d"
+        Title="TaskManager - Вход" 
+        Height="700" 
+        Width="450"
+        ResizeMode="NoResize"
         prism:ViewModelLocator.AutoWireViewModel="True"
         WindowStartupLocation="CenterScreen"
+        WindowStyle="SingleBorderWindow"
+        Background="#F5F7FA"
         Name="window">
-    <Grid>
+    <Window.Resources>
+        <!-- Тень для карточки -->
+        <DropShadowEffect x:Key="CardShadow" 
+                         Direction="270" 
+                         ShadowDepth="5" 
+                         BlurRadius="15" 
+                         Opacity="0.3"/>
+    </Window.Resources>
+    
+    <Grid Margin="30">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Vertical"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Center"
-                    Width="250">
-            <TextBox Text="{Binding UserLogin}" Style="{StaticResource commonTBox}"
-                     HorizontalContentAlignment="Center"/>
-            <PasswordBox x:Name="UserPassword" Style="{StaticResource commonPBox}"
-                         HorizontalContentAlignment="Center"/>
-            <Button Content="OK" Command="{Binding GetUserFromDBCommand}"
-                    CommandParameter="{Binding ElementName=UserPassword}"
-                    Style="{StaticResource commonBtn}"
-                    Width="100"/>
+        
+        <!-- Заголовок -->
+        <StackPanel Grid.Row="0" 
+                    HorizontalAlignment="Center" 
+                    Margin="0,0,0,30">
+            <!-- Иконка -->
+            <Border Width="80" 
+                    Height="80" 
+                    Background="#0696d7" 
+                    CornerRadius="40"
+                    HorizontalAlignment="Center"
+                    Effect="{StaticResource CardShadow}">
+                <TextBlock Text="📋" 
+                          FontSize="40" 
+                          HorizontalAlignment="Center" 
+                          VerticalAlignment="Center"
+                          Foreground="White"/>
+            </Border>
+            <TextBlock Text="TaskManager" 
+                      FontSize="28" 
+                      FontWeight="Bold" 
+                      Foreground="#2C3E50"
+                      HorizontalAlignment="Center"
+                      Margin="0,15,0,5"/>
+            <TextBlock Text="Войдите в систему для продолжения" 
+                      FontSize="14" 
+                      Foreground="#7F8C8D"
+                      HorizontalAlignment="Center"/>
         </StackPanel>
-        <StackPanel Grid.Row="1" Orientation="Vertical" VerticalAlignment="Center"
-                    HorizontalAlignment="Stretch">
-            <StackPanel.Style>
-                <Style TargetType="StackPanel">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding CurrentUserCache}" Value="{x:Null}">
-                            <Setter Property="Visibility" Value="Hidden"></Setter>
-                            <Setter Property="Height" Value="0"></Setter>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </StackPanel.Style>
-            <TextBlock Text="Предыдущий пользователь" Style="{StaticResource commonTBlock}"/>
-            <Button Content="{Binding CurrentUserCache.Login}"
-                    Command="{Binding LoginFromCacheCommand}"
-                    CommandParameter="{Binding ElementName=window}"
-                    Style="{StaticResource commonBtn}">
+        
+        <!-- Форма входа -->
+        <Border Grid.Row="1" 
+                Background="White"
+                CornerRadius="12"
+                Padding="40,20"
+                Effect="{StaticResource CardShadow}">
+            <StackPanel>
+                <!-- Поле Логин -->
+                <StackPanel Margin="0,0,0,18">
+                    <TextBlock Text="📧 Email или логин" 
+                              FontSize="13" 
+                              FontWeight="SemiBold"
+                              Foreground="#34495E"
+                              Margin="0,0,0,6"/>
+                    <TextBox Text="{Binding UserLogin, UpdateSourceTrigger=PropertyChanged}" 
+                            Style="{StaticResource commonTBox}"/>
+                    
+                </StackPanel>
                 
-            </Button>
-            
-        </StackPanel>
+                <!-- Поле Пароль -->
+                <StackPanel Margin="0,0,0,25">
+                    <TextBlock Text="🔒 Пароль" 
+                              FontSize="13" 
+                              FontWeight="SemiBold"
+                              Foreground="#34495E"
+                              Margin="0,0,0,6"/>
+                    <PasswordBox x:Name="UserPassword" 
+                               Height="40"
+                               FontSize="14"
+                               VerticalContentAlignment="Center"
+                               Background="White"/>
+                </StackPanel>
+                
+                <!-- Кнопка Входа -->
+                <Button Content="Войти" 
+                        Command="{Binding GetUserFromDBCommand}"
+                        CommandParameter="{Binding ElementName=UserPassword}"
+                        Style="{StaticResource commonBtn}"
+                        Height="45"
+                        FontSize="15"
+                        FontWeight="SemiBold"
+                        Margin="0,0,0,15"/>
+                
+                <!-- Разделитель -->
+                <Border Height="1" 
+                       Background="#ECF0F1" 
+                       Margin="0,10,0,15"/>
+                
+                <!-- Вход из кэша -->
+                <StackPanel>
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentUserCache}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                    
+                    <TextBlock Text="Вход как предыдущий пользователь" 
+                              FontSize="13" 
+                              Foreground="#7F8C8D"
+                              HorizontalAlignment="Center"
+                              Margin="0,0,0,10"/>
+                    <Button Content="{Binding CurrentUserCache.Login}"
+                            Command="{Binding LoginFromCacheCommand}"
+                            CommandParameter="{Binding ElementName=window}"
+                            Style="{StaticResource commonBtn}"
+                            Height="40"
+                            FontSize="14"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        
+        <!-- Подвал -->
+        <TextBlock Grid.Row="2" 
+                  Text="© 2026 TaskManager. Все права защищены." 
+                  FontSize="11" 
+                  Foreground="#BDC3C7"
+                  HorizontalAlignment="Center"
+                  Margin="0,20,0,0"/>
     </Grid>
 </Window>

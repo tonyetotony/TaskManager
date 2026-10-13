@@ -5,30 +5,78 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:TaskManager.Client.Views.AddWindows"
         mc:Ignorable="d"
-        Title="AddUsersToProjectWindow" Height="450" Width="800">
+        Title="Добавить пользователей" 
+        Height="500" 
+        Width="500"
+        WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <!-- Тень для карточки -->
+        <DropShadowEffect x:Key="CardShadow" 
+                         Direction="270" 
+                         ShadowDepth="5" 
+                         BlurRadius="15" 
+                         Opacity="0.2"/>
+    </Window.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <ListBox ItemsSource="{Binding NewUsersForSelectedProject}"
-                 SelectionMode="Extended"
-                 SelectionChanged="ListBox_SelectionChanged">
+        
+        <!-- Список пользователей -->
+        <ListBox Grid.Row="0" 
+                 x:Name="UsersListBox"
+                 ItemsSource="{Binding NewUsersForSelectedProject}"
+                 SelectionMode="Multiple"
+                 SelectionChanged="ListBox_SelectionChanged"
+                 Margin="20,20,20,10">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Path=Email}" Style="{StaticResource commonTBlock}"></TextBlock>
-                        <TextBlock Text=" "></TextBlock>
-                        <TextBlock Text="{Binding Path=FirstName}" Style="{StaticResource commonTBlock}"></TextBlock>
-                        <TextBlock Text=" "></TextBlock>
-                        <TextBlock Text="{Binding Path=LastName}" Style="{StaticResource commonTBlock}"></TextBlock>
-                        <TextBlock Text=" "></TextBlock>
-                        <TextBlock Text="{Binding Path=Status}" Style="{StaticResource commonTBlock}"></TextBlock>
-                    </StackPanel>
+                    <Border Background="White" 
+                           CornerRadius="8" 
+                           Padding="12"
+                           Margin="0,0,0,8"
+                           Effect="{StaticResource CardShadow}">
+                        <StackPanel Orientation="Horizontal">
+                            <!-- Аватар -->
+                            <Border Width="40" Height="40" Background="#0696d7" CornerRadius="20" Margin="0,0,12,0">
+                                <TextBlock Text="👤" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                            </Border>
+                            
+                            <!-- Информация -->
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} {1}">
+                                            <Binding Path="FirstName"/>
+                                            <Binding Path="LastName"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                                <TextBlock Text="{Binding Email}" 
+                                          FontSize="11" 
+                                          Foreground="#7F8C8D"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Button Grid.Row="1" Content="Add users" Command="{Binding AddUsersToProjectCommand}"
-                Style="{StaticResource commonBtn}"></Button>
+        
+        <!-- Кнопка добавления -->
+        <Border Grid.Row="1" 
+                Background="#F8F9FA"
+                BorderThickness="0,1,0,0"
+                BorderBrush="#ECF0F1"
+                Padding="20,15">
+            <Button Content="➕ Добавить выбранных" 
+                   Command="{Binding AddUsersToProjectCommand}"
+                   Style="{StaticResource commonBtn}"
+                   Height="40"
+                   FontSize="14"
+                   FontWeight="SemiBold"
+                   HorizontalAlignment="Right"/>
+        </Border>
     </Grid>
 </Window>

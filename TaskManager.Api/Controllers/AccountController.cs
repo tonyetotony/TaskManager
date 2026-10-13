@@ -30,7 +30,14 @@ namespace TaskManager.Api.Controllers
             var user = _db.Users.FirstOrDefault(u => u.Email == username);
             
             if (user != null)
+            {
+                // Обновляем дату последнего входа
+                user.LastLoginDate = DateTime.Now;
+                _db.Users.Update(user);
+                _db.SaveChanges();
+                
                 return Ok(user.ToDto());
+            }
             return NotFound();
         }
         [HttpPost("token")]

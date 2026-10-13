@@ -30,6 +30,7 @@ public class User
         Phone = phone;
         Photo = photo;
         RegistrationDate = DateTime.Now;
+        LastLoginDate = DateTime.Now;
         Status = status;
     }
 
@@ -42,6 +43,7 @@ public class User
         Phone = model.Phone;
         Photo = model.Photo;
         RegistrationDate = model.RegistrationDate;
+        LastLoginDate = model.LastLoginDate != default ? model.LastLoginDate : DateTime.Now;
         Status = model.Status;
     }
 
@@ -57,6 +59,7 @@ public class User
             Phone = this.Phone,
             Photo = this.Photo,
             RegistrationDate = this.RegistrationDate,
+            LastLoginDate = this.LastLoginDate,
             Status = this.Status
         };
     }

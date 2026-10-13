@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Windows;
 using TaskManager.Client.Models;
 using TaskManager.Client.Services;
@@ -125,9 +126,9 @@ public class ProjectsPageViewModel : BindableBase
         
     }
     
-    private List<UserModel> _selectedUsersForProject = new List<UserModel>();
+    private ObservableCollection<UserModel> _selectedUsersForProject = new ObservableCollection<UserModel>();
 
-    public List<UserModel> SelectedUsersForProject
+    public ObservableCollection<UserModel> SelectedUsersForProject
     {
         get => _selectedUsersForProject;
         set
@@ -243,13 +244,14 @@ public class ProjectsPageViewModel : BindableBase
 
     private void AddUsersToProject()
     {
-        if (SelectedUsersForProject == null || SelectedUsersForProject?.Count == 0)
+        if (SelectedUsersForProject == null || SelectedUsersForProject.Count == 0)
         {
             _viewService.ShowMessage("Select users");
             return;
         }
             
-        var resultAction = _projectRequestService.AddUsersToProject(_token, SelectedProject.Model.Id, SelectedUsersForProject.Select(u => u.Id).ToList());
+        var userIds = SelectedUsersForProject.Select(u => u.Id).ToList();
+        var resultAction = _projectRequestService.AddUsersToProject(_token, SelectedProject.Model.Id, userIds);
         _viewService.ShowActionResult(resultAction, "New users is added");
         UpdatePage();
        
@@ -282,7 +284,7 @@ public class ProjectsPageViewModel : BindableBase
     {
         UserProjects = GetProjectsToClient();
         SelectedProject = null;
-        SelectedUsersForProject = new List<UserModel>();
+        SelectedUsersForProject.Clear();
     }
 
     private void OpenProjectDesksPage()

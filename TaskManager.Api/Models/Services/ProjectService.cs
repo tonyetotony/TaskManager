@@ -37,7 +37,7 @@ public class ProjectService : AbstractionService, ICommonService<ProjectModel>
                 project.Description = model.Description;
             if (model.Image != null && model.Image.Length > 0)
                 project.Image = model.Image;
-            if (model.Status.HasValue)
+            if (model.Status.HasValue && model.Status.Value != default)
                 project.Status = model.Status.Value;
             if (model.AdminId.HasValue && model.AdminId.Value > 0) 
                 project.AdminId = model.AdminId;

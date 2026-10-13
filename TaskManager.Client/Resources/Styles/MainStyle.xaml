@@ -7,17 +7,28 @@
     <FontStyle x:Key="commonFontStyle">Normal</FontStyle>
     
     <Style TargetType="TextBox" x:Key="commonTBox">
-        <Setter Property="Height" Value="20"></Setter>
+        <Setter Property="Height" Value="38"></Setter>
         <Setter Property="FontSize" Value="14"></Setter>
         <Setter Property="FontStyle" Value="{StaticResource commonFontStyle}"></Setter>
         <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
-        <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
+        <Setter Property="HorizontalContentAlignment" Value="Left"></Setter>
         <Setter Property="VerticalAlignment" Value="Center"></Setter>
         <Setter Property="Margin" Value="0,3"></Setter>
         <Setter Property="BorderThickness" Value="1"></Setter>
+        <Setter Property="Padding" Value="10,6"></Setter>
+        <Setter Property="Foreground" Value="#2C3E50"></Setter>
+        <Setter Property="CaretBrush" Value="#0696d7"></Setter>
         <Style.Resources>
             <Style TargetType="{x:Type Border}">
-                <Setter Property="CornerRadius" Value="3"></Setter>
+                <Setter Property="CornerRadius" Value="8"></Setter>
+            </Style>
+            <Style TargetType="{x:Type TextBox}">
+                <Style.Triggers>
+                    <Trigger Property="IsFocused" Value="True">
+                        <Setter Property="BorderBrush" Value="#0696d7"/>
+                        <Setter Property="BorderThickness" Value="2"/>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
         </Style.Resources>
     </Style>
@@ -29,17 +40,27 @@
     </Style>
     
     <Style TargetType="PasswordBox" x:Key="commonPBox">
-        <Setter Property="Height" Value="20"></Setter>
+        <Setter Property="Height" Value="38"></Setter>
         <Setter Property="FontSize" Value="14"></Setter>
         <Setter Property="FontStyle" Value="{StaticResource commonFontStyle}"></Setter>
         <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
-        <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
+        <Setter Property="HorizontalContentAlignment" Value="Left"></Setter>
         <Setter Property="VerticalAlignment" Value="Center"></Setter>
         <Setter Property="Margin" Value="0,3"></Setter>
         <Setter Property="BorderThickness" Value="1"></Setter>
+        <Setter Property="Padding" Value="10,6"></Setter>
+        <Setter Property="Foreground" Value="#2C3E50"></Setter>
         <Style.Resources>
             <Style TargetType="{x:Type Border}">
-                <Setter Property="CornerRadius" Value="3"></Setter>
+                <Setter Property="CornerRadius" Value="8"></Setter>
+            </Style>
+            <Style TargetType="{x:Type PasswordBox}">
+                <Style.Triggers>
+                    <Trigger Property="IsFocused" Value="True">
+                        <Setter Property="BorderBrush" Value="#0696d7"/>
+                        <Setter Property="BorderThickness" Value="2"/>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
         </Style.Resources>
     </Style>
@@ -51,9 +72,32 @@
         <Setter Property="Foreground" Value="White"></Setter>
         <Setter Property="Margin" Value="5"></Setter>
         <Setter Property="Cursor" Value="Hand"></Setter>
+        <Setter Property="Height" Value="36"></Setter>
+        <Setter Property="Padding" Value="15,8"></Setter>
+        <Setter Property="FontWeight" Value="SemiBold"></Setter>
         <Style.Resources>
             <Style TargetType="{x:Type Border}">
-                <Setter Property="CornerRadius" Value="3"></Setter>
+                <Setter Property="CornerRadius" Value="8"></Setter>
+            </Style>
+            <Style TargetType="Button">
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#0582BA"/>
+                        <Setter Property="RenderTransform">
+                            <Setter.Value>
+                                <ScaleTransform ScaleX="1.02" ScaleY="1.02"/>
+                            </Setter.Value>
+                        </Setter>
+                    </Trigger>
+                    <Trigger Property="IsPressed" Value="True">
+                        <Setter Property="Background" Value="#046A9A"/>
+                        <Setter Property="RenderTransform">
+                            <Setter.Value>
+                                <ScaleTransform ScaleX="0.98" ScaleY="0.98"/>
+                            </Setter.Value>
+                        </Setter>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
         </Style.Resources>
     </Style>
@@ -76,10 +120,24 @@
         <Setter Property="FontSize" Value="20"></Setter>
     </Style>
     
+    <Style TargetType="TextBlock" x:Key="fieldLabel">
+        <Setter Property="FontSize" Value="13"></Setter>
+        <Setter Property="FontWeight" Value="SemiBold"></Setter>
+        <Setter Property="Foreground" Value="#34495E"></Setter>
+        <Setter Property="Margin" Value="0,0,0,6"></Setter>
+    </Style>
+    
     <Style TargetType="GridSplitter" x:Key="commonSplitter">
         <Setter Property="BorderThickness" Value="1"></Setter>
         <Setter Property="BorderBrush" Value="{StaticResource commonGreyColor}"></Setter>
         <Setter Property="Margin" Value="2"></Setter>
+        <Setter Property="Background" Value="#ECF0F1"/>
+    </Style>
+    
+    <Style TargetType="GridSplitter">
+        <Setter Property="Background" Value="#ECF0F1"/>
+        <Setter Property="Width" Value="5"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
     </Style>
     
     <Style TargetType="Border" x:Key="commonBorder">
