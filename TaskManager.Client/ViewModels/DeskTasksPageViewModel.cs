@@ -24,6 +24,11 @@ public class DeskTasksPageViewModel : BindableBase
 
     private DeskTasksPage _page;
 
+    public UserModel CurrentUser
+    {
+        get => _usersRequestService.GetCurrentUser(_token);
+    }
+
     #region COMMANDS
 
     public DelegateCommand OpenNewTaskCommand { get; private set; }
@@ -176,15 +181,48 @@ public class DeskTasksPageViewModel : BindableBase
     {
         if (SelectedTask == null) return;
         
-        _tasksRequestService.Update(_token, SelectedTask.Model);
+        if (SelectedTaskExecutor != null)
+            SelectedTask.Model.ExecutorId = SelectedTaskExecutor.Id;
+        
+        var result = _tasksRequestService.Update(_token, SelectedTask.Model);
+        if (result == System.Net.HttpStatusCode.OK)
+        {
+            _viewService.ShowMessage("Task is updated");
+            UpdatePage();
+        }
+        else
+        {
+            _viewService.ShowMessage("Failed to update task");
+        }
     }
     
     private void DeleteTask()
     {
         if (SelectedTask == null) return;
         
-        _tasksRequestService.Delete(_token, SelectedTask.Model.Id);
-        UpdatePage();
+        var result = MessageBox.Show(
+            $"Are you sure you want to delete task '{SelectedTask.Model.Name}'?",
+            "Confirm deletion",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question);
+
+        if (result == MessageBoxResult.Yes)
+        {
+            _tasksRequestService.Delete(_token, SelectedTask.Model.Id);
+            UpdatePage();
+        }
+    }
+    
+    private void TaskControl_EditRequested(object sender, TaskClient task)
+    {
+        SelectedTask = task;
+        OpenUpdateTask();
+    }
+    
+    private void TaskControl_DeleteRequested(object sender, TaskClient task)
+    {
+        SelectedTask = task;
+        DeleteTask();
     }
     
     private void UpdatePage()
@@ -200,8 +238,8 @@ public class DeskTasksPageViewModel : BindableBase
     {
         if (sender is Border border)
         {
-            border.BorderBrush = new SolidColorBrush(Color.FromRgb(100, 149, 237));
-            border.Background = new SolidColorBrush(Color.FromRgb(240, 248, 255));
+            border.BorderBrush = new SolidColorBrush(Color.FromRgb(6, 150, 215));
+            border.Background = new SolidColorBrush(Color.FromRgb(232, 244, 248));
         }
     }
 
@@ -209,8 +247,8 @@ public class DeskTasksPageViewModel : BindableBase
     {
         if (sender is Border border)
         {
-            border.BorderBrush = new SolidColorBrush(Color.FromRgb(200, 200, 200));
-            border.Background = null;
+            border.BorderBrush = new SolidColorBrush(Color.FromRgb(224, 224, 224));
+            border.Background = new SolidColorBrush(Color.FromRgb(248, 249, 250));
         }
     }
 
@@ -274,19 +312,24 @@ public class DeskTasksPageViewModel : BindableBase
     
     private void OpenUpdateTask()
     {
+        if (SelectedTask == null)
+        {
+            _viewService.ShowMessage("Выберите задачу");
+            return;
+        }
+        
         TypeActionWithTask = ClientAction.Update;
+        SelectedTaskExecutor = SelectedTask.Executor;
         var wnd = new CreateOrUpdateTaskWindow();
         _viewService.OpenWindow(wnd, this);
     }
     
     private Grid CreateTasksGrid()
     {
-        ResourceDictionary resource = new ResourceDictionary();
-        resource.Source = new Uri("./Resources/Styles/MainStyle.xaml", UriKind.Relative);
-        
         Grid grid = new Grid();
+        
         var row0 = new RowDefinition();
-        row0.Height = new GridLength(30);
+        row0.Height = new GridLength(35);
         
         var row1 = new RowDefinition();
         row1.Height = new GridLength(1, GridUnitType.Star);
@@ -296,14 +339,20 @@ public class DeskTasksPageViewModel : BindableBase
         int columnCount = 0;
         foreach (var column in TasksByColumns)
         {
+            // Каждая колонка занимает равную ширину
             var col = new ColumnDefinition();
+            col.Width = new GridLength(1, GridUnitType.Star);
             grid.ColumnDefinitions.Add(col);
             
-            //header
+            // Заголовок колонки
             TextBlock header = new TextBlock();
             header.Text = column.Key;
-            header.Style = resource["headerTBlock"] as Style;
+            header.FontSize = 16;
+            header.FontWeight = FontWeights.Bold;
+            header.Foreground = new SolidColorBrush(Color.FromRgb(44, 62, 80));
             header.HorizontalAlignment = HorizontalAlignment.Center;
+            header.VerticalAlignment = VerticalAlignment.Center;
+            header.Margin = new Thickness(0);
             
             Grid.SetRow(header, 0);
             Grid.SetColumn(header, columnCount);
@@ -313,12 +362,14 @@ public class DeskTasksPageViewModel : BindableBase
             //column with scroll and drop zone
             var columnBorder = new Border
             {
-                BorderBrush = new SolidColorBrush(Color.FromRgb(200, 200, 200)),
-                BorderThickness = new Thickness(2),
-                CornerRadius = new CornerRadius(5),
-                Margin = new Thickness(5),
-                MinHeight = 300,
-                Padding = new Thickness(5)
+                BorderBrush = new SolidColorBrush(Color.FromRgb(224, 224, 224)),
+                BorderThickness = new Thickness(1),
+                Background = new SolidColorBrush(Color.FromRgb(248, 249, 250)),
+                CornerRadius = new CornerRadius(12),
+                Margin = new Thickness(8),
+                MinHeight = 200,
+                Padding = new Thickness(12),
+                VerticalAlignment = VerticalAlignment.Stretch
             };
 
             var scrollViewer = new ScrollViewer
@@ -341,6 +392,9 @@ public class DeskTasksPageViewModel : BindableBase
             {
                 var taskView = new TaskControl(task);
                 taskView.Margin = new Thickness(5);
+                taskView.IsAdminOrEditor = CurrentUser.Status == UserStatus.Admin || CurrentUser.Status == UserStatus.Editor;
+                taskView.EditRequested += TaskControl_EditRequested;
+                taskView.DeleteRequested += TaskControl_DeleteRequested;
                 tasksViews.Add(taskView);
                 stackPanel.Children.Add(taskView);
             }

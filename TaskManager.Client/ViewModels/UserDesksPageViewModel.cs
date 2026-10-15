@@ -14,9 +14,9 @@ public class UserDesksPageViewModel : BindableBase
 
     #region COMMANDS
 
-    public DelegateCommand OpenEditDeskCommand { get; private set; }
+    public DelegateCommand<object> OpenEditDeskCommand { get; private set; }
     public DelegateCommand CreateOrUpdateDeskCommand { get; private set; }
-    public DelegateCommand DeleteDeskCommand { get; private set; }
+    public DelegateCommand<object> DeleteDeskCommand { get; private set; }
     public DelegateCommand SelectImageForDeskCommand { get; private set; }
     public DelegateCommand AddNewColumnItemCommand { get; private set; }
     public DelegateCommand<object> RemoveColumnItemCommand { get; private set; }
@@ -30,9 +30,9 @@ public class UserDesksPageViewModel : BindableBase
         _viewService = new CommonViewService();
         _desksViewService = new DesksViewService(_token, _desksRequestService);
 
-        OpenEditDeskCommand = new DelegateCommand(OpenUpdateDesk);
+        OpenEditDeskCommand = new DelegateCommand<object>(OpenUpdateDesk);
         CreateOrUpdateDeskCommand = new DelegateCommand(UpdateDesk);
-        DeleteDeskCommand = new DelegateCommand(DeleteDesk);
+        DeleteDeskCommand = new DelegateCommand<object>(DeleteDesk);
         SelectImageForDeskCommand = new DelegateCommand(SelectImageForDesk);
         
         AddNewColumnItemCommand = new DelegateCommand(AddNewColumnItem);
@@ -46,6 +46,11 @@ public class UserDesksPageViewModel : BindableBase
     }
 
     #region PROPERTIES
+
+    public UserModel CurrentUser
+    {
+        get => new UsersRequestService().GetCurrentUser(_token);
+    }
 
     private List<ModelClient<DeskModel>> _allDesks = new List<ModelClient<DeskModel>>();
     public List<ModelClient<DeskModel>> AllDesks
@@ -97,30 +102,52 @@ public class UserDesksPageViewModel : BindableBase
         }
     }
     
-    private void OpenUpdateDesk()
+    private void OpenUpdateDesk(object deskId)
     { 
-        SelectedDesk = _desksViewService.GetDeskClientById(SelectedDesk.Model.Id);
-        ColumnsForNewDesk = new ObservableCollection<ColumnBindingHelp>(SelectedDesk.Model.Columns.Select(c=>new ColumnBindingHelp(c)));
-        _desksViewService.OpenViewDeskInfo(SelectedDesk.Model.Id, this);
+        if (deskId == null)
+        {
+            _viewService.ShowMessage("Desk ID is not available");
+            return;
+        }
+        
+        SelectedDesk = _desksViewService.GetDeskClientById(deskId);
+        if (SelectedDesk != null && SelectedDesk.Model != null)
+        {
+            ColumnsForNewDesk = new ObservableCollection<ColumnBindingHelp>(SelectedDesk.Model.Columns.Select(c=>new ColumnBindingHelp(c)));
+            _desksViewService.OpenViewDeskInfo(deskId, this);
+        }
+        else
+        {
+            _viewService.ShowMessage("Failed to load desk data");
+        }
     }
 
     private void UpdateDesk()
     {
+        if (SelectedDesk?.Model == null)
+        {
+            _viewService.ShowMessage("Desk data is not available");
+            return;
+        }
+        
         SelectedDesk.Model.Columns = ColumnsForNewDesk.Select(c => c.Value).ToArray();
         _desksViewService.UpdateDesk(SelectedDesk.Model);
         UpdatePage();
     }
     
-    private void DeleteDesk()
+    private void DeleteDesk(object deskId)
     {
-        _desksViewService.DeleteDesk(SelectedDesk.Model.Id);
-        UpdatePage();
+        if (deskId != null)
+        {
+            _desksViewService.DeleteDesk((int)deskId);
+            UpdatePage();
+        }
     }
     
     
-    private Dictionary<string, DelegateCommand> _contextMenuCommands =  new Dictionary<string, DelegateCommand>();
+    private Dictionary<string, DelegateCommand<object>> _contextMenuCommands =  new Dictionary<string, DelegateCommand<object>>();
 
-    public Dictionary<string, DelegateCommand> ContextMenuCommands
+    public Dictionary<string, DelegateCommand<object>> ContextMenuCommands
     {
         get => _contextMenuCommands;
         set

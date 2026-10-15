@@ -9,50 +9,92 @@
              d:DesignHeight="200" d:DesignWidth="200">
  
     
-    <Border Style="{StaticResource taskPanelBorder}"
+    <Border x:Name="TaskBorder"
+            Background="White"
+            BorderBrush="#E0E0E0"
+            BorderThickness="1"
+            CornerRadius="12"
+            Padding="15"
+            Margin="5"
             MouseLeftButtonDown="TaskBorder_MouseLeftButtonDown"
             MouseEnter="TaskBorder_MouseEnter"
             MouseLeave="TaskBorder_MouseLeave"
             Cursor="Hand">
+        <Border.Effect>
+            <DropShadowEffect Direction="270" ShadowDepth="3" BlurRadius="10" Opacity="0.15"/>
+        </Border.Effect>
+        
+        <Border.ContextMenu>
+            <ContextMenu x:Name="TaskContextMenu">
+                <MenuItem x:Name="EditMenuItem" Header="✏️ Изменить" 
+                          Click="EditMenuItem_Click"/>
+                <MenuItem x:Name="DeleteMenuItem" Header="🗑️ Удалить" 
+                          Click="DeleteMenuItem_Click"/>
+            </ContextMenu>
+        </Border.ContextMenu>
+        
         <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                </Grid.RowDefinitions>
-                <TextBlock Text="{Binding Path=Model.Name}" 
-                           Style="{StaticResource commonTBlock}"/>
-                <TextBlock Grid.Row="1" Text="{Binding Path=Model.Description}" 
-                           Style="{StaticResource commonTBlock}"/>
-                <StackPanel Grid.Row="2" Orientation="Horizontal">
-                    <TextBlock Text="Creator: " 
-                               Style="{StaticResource commonTBlock}"/>
-                    <TextBlock Text="{Binding Path=Creator}" 
-                               Style="{StaticResource commonTBlock}"/>
-                </StackPanel>
-                
-                <StackPanel Grid.Row="3" Orientation="Horizontal">
-                    <TextBlock Text="Executor: " 
-                               Style="{StaticResource commonTBlock}"/>
-                    <TextBlock Text="{Binding Path=Executor}" 
-                               Style="{StaticResource commonTBlock}"/>
-                </StackPanel>
-                
-                <StackPanel Grid.Row="4" Orientation="Horizontal">
-                    <TextBlock Text="Start: " 
-                               Style="{StaticResource commonTBlock}"/>
-                    <DatePickerTextBox Text="{Binding Path=Model.StartDate}" IsReadOnly="True"/> 
-                </StackPanel>
-                
-                <StackPanel Grid.Row="5" Orientation="Horizontal">
-                    <TextBlock Text="End: " 
-                               Style="{StaticResource commonTBlock}"/>
-                    <DatePickerTextBox Text="{Binding Path=Model.EndDate}" IsReadOnly="True"/>
-                </StackPanel>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="28"/>
+                <RowDefinition Height="28"/>
+                <RowDefinition Height="28"/>
+                <RowDefinition Height="28"/>
+            </Grid.RowDefinitions>
             
+            <!-- Заголовок задачи -->
+            <TextBlock Text="{Binding Path=Model.Name}" 
+                       FontSize="14"
+                       FontWeight="Bold"
+                       Foreground="#2C3E50"
+                       TextWrapping="Wrap"/>
+            
+            <!-- Описание -->
+            <TextBlock Grid.Row="1" Text="{Binding Path=Model.Description}" 
+                       FontSize="12"
+                       Foreground="#7F8C8D"
+                       TextWrapping="Wrap"
+                       Margin="0,5,0,10"/>
+            
+            <!-- Разделитель -->
+            <Border Grid.Row="2" Height="1" Background="#ECF0F1" Margin="0,5"/>
+            
+            <!-- Создатель -->
+            <StackPanel Grid.Row="3" Orientation="Horizontal">
+                <Border Width="20" Height="20" Background="#E8F4F8" CornerRadius="10" Margin="0,0,6,0">
+                    <TextBlock Text="👤" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <TextBlock Text="{Binding Path=Creator}" 
+                           FontSize="11"
+                           Foreground="#7F8C8D"/>
+            </StackPanel>
+            
+            <!-- Исполнитель -->
+            <StackPanel Grid.Row="4" Orientation="Horizontal">
+                <Border Width="20" Height="20" Background="#E8F4F8" CornerRadius="10" Margin="0,0,6,0">
+                    <TextBlock Text="🎯" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <TextBlock Text="{Binding Path=Executor}" 
+                           FontSize="11"
+                           Foreground="#7F8C8D"/>
+            </StackPanel>
+            
+            <!-- Даты -->
+            <StackPanel Grid.Row="5" Orientation="Horizontal">
+                <Border Width="20" Height="20" Background="#E8F4F8" CornerRadius="10" Margin="0,0,6,0">
+                    <TextBlock Text="📅" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <TextBlock FontSize="11" Foreground="#7F8C8D">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0:dd.MM} - {1:dd.MM}">
+                            <Binding Path="Model.StartDate" />
+                            <Binding Path="Model.EndDate" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </StackPanel>
         </Grid>
    </Border>
+
 </UserControl>

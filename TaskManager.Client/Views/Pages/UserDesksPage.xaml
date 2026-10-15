@@ -30,13 +30,22 @@
             
             <!-- Кнопка создания доски -->
             <Button Content="➕ Создать доску" 
-                   Style="{StaticResource commonBtn}"
                    Height="45"
                    FontSize="15"
                    FontWeight="SemiBold"
                    Margin="0,0,0,25"
                    HorizontalAlignment="Left"
-                   Command="{Binding CreateDeskCommand}"/>
+                   Command="{Binding CreateDeskCommand}">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource commonBtn}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding CurrentUser.Status}" Value="User">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
             
             <!-- Если досок нет -->
             <StackPanel Visibility="Collapsed">
@@ -103,69 +112,74 @@
                                           Foreground="#7F8C8D"
                                           TextWrapping="Wrap"
                                           Margin="0,0,0,15"
-                                          MaxHeight="60">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Model.Description}" Value="{x:Null}">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Model.Description}" Value="">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
+                                          MaxHeight="60"/>
                                 
                                 <Border Height="1" Background="#ECF0F1" Margin="0,0,0,15"/>
                                 
-                                <!-- Информация о доске -->
-                                <StackPanel>
-                                    <!-- Статус приватности -->
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                        <Border Width="24" Height="24" Background="#E8F4F8" CornerRadius="12" Margin="0,0,8,0">
-                                            <TextBlock Text="🔒" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                        <TextBlock Text="{Binding Model.IsPrivate, StringFormat={}{0}}" 
-                                                  FontSize="12" 
-                                                  Foreground="#7F8C8D"/>
-                                    </StackPanel>
-                                    
-                                    <!-- Дата создания -->
-                                    <StackPanel Orientation="Horizontal">
-                                        <Border Width="24" Height="24" Background="#E8F4F8" CornerRadius="12" Margin="0,0,8,0">
-                                            <TextBlock Text="📅" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                        <TextBlock Text="{Binding Model.CreationDate, StringFormat={}{0:dd.MM.yyyy}}" 
-                                                  FontSize="12" 
-                                                  Foreground="#7F8C8D"/>
-                                    </StackPanel>
+                                <!-- Количество задач -->
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                                    <Border Width="24" Height="24" Background="#E8F4F8" CornerRadius="12" Margin="0,0,8,0">
+                                        <TextBlock Text="📝" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="Задач: " 
+                                              FontSize="12" 
+                                              Foreground="#7F8C8D"/>
+                                    <TextBlock Text="{Binding Model.TasksIds.Count}" 
+                                              FontSize="12" 
+                                              FontWeight="SemiBold"
+                                              Foreground="#2C3E50"/>
                                 </StackPanel>
                                 
-                                <Border Height="1" Background="#ECF0F1" Margin="0,15,0,15"/>
+                                <!-- Дата создания -->
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                                    <Border Width="24" Height="24" Background="#E8F4F8" CornerRadius="12" Margin="0,0,8,0">
+                                        <TextBlock Text="📅" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="{Binding Model.CreationDate, StringFormat={}{0:dd.MM.yyyy}}" 
+                                              FontSize="12" 
+                                              Foreground="#7F8C8D"/>
+                                </StackPanel>
+                                
+                                <Border Height="1" Background="#ECF0F1" Margin="0,0,0,15"/>
                                 
                                 <!-- Кнопки действий -->
                                 <StackPanel Orientation="Horizontal">
                                     <Button Content="✏️" 
-                                           Style="{StaticResource commonBtn}"
                                            Width="35"
                                            Height="35"
                                            Padding="0"
                                            FontSize="14"
                                            Margin="0,0,8,0"
-                                           Command="{Binding DataContext.EditDeskCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                           CommandParameter="{Binding}"/>
+                                           Command="{Binding DataContext.OpenEditDeskCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                           CommandParameter="{Binding Model.Id}">
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource commonBtn}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding DataContext.CurrentUser.Status, RelativeSource={RelativeSource AncestorType=Page}}" Value="User">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
                                     
                                     <Button Content="🗑️" 
-                                           Style="{StaticResource commonBtnRed}"
                                            Width="35"
                                            Height="35"
                                            Padding="0"
                                            FontSize="14"
                                            Command="{Binding DataContext.DeleteDeskCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                           CommandParameter="{Binding}"/>
+                                           CommandParameter="{Binding Model.Id}">
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource commonBtnRed}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding DataContext.CurrentUser.Status, RelativeSource={RelativeSource AncestorType=Page}}" Value="User">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
                                 </StackPanel>
                             </StackPanel>
                         </Border>

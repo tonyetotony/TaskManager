@@ -7,84 +7,125 @@
         xmlns:models="clr-namespace:TaskManager.Common.Models;assembly=TaskManager.Common.Models"
         xmlns:system="clr-namespace:System;assembly=System.Runtime"
         mc:Ignorable="d"
-        Title="CreateOrUpdateTaskWindow" Height="450" Width="350">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="30"/>
-        </Grid.RowDefinitions>
-        <TextBlock Text="Задача" Style="{StaticResource headerTBlock}"/>
-        <ScrollViewer Grid.Row="1"  
-                      VerticalScrollBarVisibility="Auto">
-            <Grid Margin="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.5*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Название: " Style="{StaticResource commonTBlock}" 
-                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedTask.Model.Name}" 
-                         Style="{StaticResource commonTBox}" 
-                           HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Описание: " Style="{StaticResource commonTBlock}" 
-                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedTask.Model.Description}" 
-                         Style="{StaticResource multilineTBox}" 
-                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Файл: " Style="{StaticResource commonTBlock}" 
-                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <Grid Grid.Row="2" Grid.Column="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="30"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Text="" MaxHeight="300"/>
-                    <Button Grid.Row="1" Content="Выбрать" 
-                            Command="{Binding SelectFileForTaskCommand}"
-                            Style="{StaticResource commonBtn}"/>
-                </Grid>
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="Исполнитель: " Style="{StaticResource commonTBlock}"
-                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <ComboBox Grid.Row="3" Grid.Column="1" 
-                          ItemsSource="{Binding AllProjectUsers}"
-                          SelectedItem="{Binding SelectedTaskExecutor}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type models:UserModel}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Path=FirstName}" Style="{StaticResource commonTBlock}"/>
-                                <TextBlock Text=" " Style="{StaticResource commonTBlock}"/>
-                                <TextBlock Text="{Binding Path=LastName}" Style="{StaticResource commonTBlock}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="Начало: " Style="{StaticResource commonTBlock}"
-                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <DatePicker Grid.Row="4" Grid.Column="1" 
-                            SelectedDate="{Binding SelectedTask.Model.StartDate}"
-                            DisplayDateStart="{x:Static system:DateTime.Today}"/>
-
-                <TextBlock Grid.Row="5" Grid.Column="0" Text="Конец: " Style="{StaticResource commonTBlock}"
-                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <DatePicker Grid.Row="5" Grid.Column="1" 
-                            SelectedDate="{Binding SelectedTask.Model.EndDate}"
-                            DisplayDateStart="{x:Static system:DateTime.Today}"/>
-            </Grid>
-        </ScrollViewer>
-        <Button Grid.Row="2" Content="Сохранить" Command="{Binding CreateOrUpdateTaskCommand}" 
-                Style="{StaticResource commonBtn}"/>
-    </Grid>
+        Title="Создание/редактирование задачи" 
+        Height="550" 
+        Width="450"
+        WindowStartupLocation="CenterOwner"
+        Background="#F5F7FA">
+    
+    <Window.Resources>
+        <!-- Тень для карточки -->
+        <DropShadowEffect x:Key="CardShadow" 
+                         Direction="270" 
+                         ShadowDepth="5" 
+                         BlurRadius="15" 
+                         Opacity="0.2"/>
+    </Window.Resources>
+    
+    <Border Background="White" 
+            CornerRadius="12" 
+            Effect="{StaticResource CardShadow}"
+            Padding="30">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Заголовок -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,25">
+                <Border Width="40" Height="40" Background="#0696d7" CornerRadius="20" Margin="0,0,12,0">
+                    <TextBlock Text="📝" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <TextBlock Text="Создание задачи" 
+                          FontSize="22" 
+                          FontWeight="Bold" 
+                          Foreground="#2C3E50"/>
+            </StackPanel>
+            
+            <!-- Форма -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <!-- Название -->
+                    <Label Content="📌 Название" />
+                    <TextBox Text="{Binding SelectedTask.Model.Name}" 
+                             Style="{StaticResource commonTBox}" 
+                             Margin="0,0,0,15"/>
+                    
+                    <!-- Описание -->
+                    <Label Content="📄 Описание" />
+                    <TextBox Text="{Binding SelectedTask.Model.Description}" 
+                             Style="{StaticResource multilineTBox}" 
+                             Margin="0,0,0,15"/>
+                    
+                    <!-- Исполнитель -->
+                    <Label Content="👤 Исполнитель" />
+                    <ComboBox ItemsSource="{Binding AllProjectUsers}"
+                              SelectedItem="{Binding SelectedTaskExecutor}"
+                              Margin="0,0,0,15">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type models:UserModel}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding FirstName}" 
+                                               FontSize="13"
+                                               Foreground="#2C3E50"/>
+                                    <TextBlock Text=" " />
+                                    <TextBlock Text="{Binding LastName}" 
+                                               FontSize="13"
+                                               Foreground="#2C3E50"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    
+                    <!-- Даты -->
+                    <Label Content="📅 Даты выполнения" />
+                    <Grid Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="15"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <StackPanel Grid.Column="0">
+                            <Label Content="Начало" 
+                                   FontSize="11" 
+                                   Foreground="#7F8C8D" 
+                                   Margin="0,0,0,5"/>
+                            <DatePicker SelectedDate="{Binding SelectedTask.Model.StartDate}"
+                                        DisplayDateStart="{x:Static system:DateTime.Today}"/>
+                        </StackPanel>
+                        
+                        <StackPanel Grid.Column="2">
+                            <Label Content="Конец" 
+                                   FontSize="11" 
+                                   Foreground="#7F8C8D" 
+                                   Margin="0,0,0,5"/>
+                            <DatePicker SelectedDate="{Binding SelectedTask.Model.EndDate}"
+                                        DisplayDateStart="{x:Static system:DateTime.Today}"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+            
+            <!-- Кнопки -->
+            <StackPanel Grid.Row="2" 
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Right" 
+                        Margin="0,20,0,0">
+                <Button Content="Отмена" 
+                        Click="CancelButton_Click"
+                        Style="{StaticResource commonBtn}"
+                        Width="100"
+                        Background="#95A5A6"
+                        BorderBrush="#95A5A6"/>
+                <Button Content="Сохранить" 
+                        Command="{Binding CreateOrUpdateTaskCommand}"
+                        Style="{StaticResource commonBtn}"
+                        Width="120"
+                        Margin="10,0,0,0"/>
+            </StackPanel>
+        </Grid>
+    </Border>
 </Window>

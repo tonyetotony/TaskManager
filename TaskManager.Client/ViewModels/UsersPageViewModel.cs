@@ -1,3 +1,5 @@
+using System.Windows;
+using System.Windows.Threading;
 using TaskManager.Client.Models;
 using TaskManager.Client.Services;
 using TaskManager.Client.Views.AddWindows;
@@ -38,6 +40,11 @@ public class UsersPageViewModel : BindableBase
             GetUsersFromExcelCommand = new DelegateCommand(GetUsersFromExcel);
             AddUsersFromExcelCommand = new DelegateCommand(AddUsersFromExcel);
             AllUsers = _usersRequestService.GetAllUsers(_token);
+        }
+
+        public UserModel CurrentUser
+        {
+            get => _usersRequestService.GetCurrentUser(_token);
         }
 
         #region PROPERTIES
@@ -127,9 +134,17 @@ public class UsersPageViewModel : BindableBase
         {
             if(userIdObj != null)
             {
-                int userId = ((UserModel)userIdObj).Id;
-                _usersRequestService.DeleteUser(_token, userId);
-                UpdatePage();
+                var user = (UserModel)userIdObj;
+                string userName = $"{user.FirstName} {user.LastName}";
+                
+                var result = _viewService.ShowConfirmDialog(
+                    $"Вы действительно хотите удалить пользователя {userName}?");
+                
+                if (result == true)
+                {
+                    _usersRequestService.DeleteUser(_token, user.Id);
+                    UpdatePage();
+                }
             }
         }
         private void CreateOrUpdateUser()
@@ -142,8 +157,18 @@ public class UsersPageViewModel : BindableBase
             {
                 _usersRequestService.UpdateUser(_token, SelectedUser);
             }
+            
+            // Закрываем окно после сохранения
+            WindowToClose?.Close();
+            
             UpdatePage();
         }
+    
+        #endregion
+    
+        #region PROPERTIES
+    
+        public Window WindowToClose { get; set; }
 
         private void OpenSelectUsersFromExcel()
         {

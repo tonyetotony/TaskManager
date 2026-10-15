@@ -7,7 +7,12 @@
         xmlns:commonModels="clr-namespace:TaskManager.Common.Models;assembly=TaskManager.Common.Models"
         xmlns:system="clr-namespace:System;assembly=System.Runtime"
         mc:Ignorable="d"
-        Title="UsersFromExcelWindow" Height="450" Width="800">
+        Title="Импорт пользователей из Excel" 
+        Height="650" 
+        Width="900"
+        WindowStartupLocation="CenterOwner"
+        Background="#F5F7FA">
+    
     <Window.Resources>
         <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
                             ObjectType="{x:Type system:Enum}">
@@ -15,47 +20,127 @@
                 <x:Type TypeName="commonModels:UserStatus"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
+        
+        <!-- Тень для карточки -->
+        <DropShadowEffect x:Key="CardShadow" 
+                         Direction="270" 
+                         ShadowDepth="5" 
+                         BlurRadius="15" 
+                         Opacity="0.2"/>
     </Window.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="30"/>
-        </Grid.RowDefinitions>
-        <Button Content="Select EXCEL file" Command="{Binding GetUsersFromExcelCommand}" 
-                Style="{StaticResource commonBtn}"/>
-        <ListView Grid.Row="1" ItemsSource="{Binding UsersFromExcel}" 
-                  SelectionChanged="ListView_SelectionChanged">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="FirstName" 
-                                    DisplayMemberBinding="{Binding Path=FirstName}"
-                                    Width="150"/>
-                    <GridViewColumn Header="LastName" 
-                                    DisplayMemberBinding="{Binding Path=LastName}"
-                                    Width="150"/>
-                    <GridViewColumn Header="Email" 
-                                    DisplayMemberBinding="{Binding Path=Email}"
-                                    Width="150"/>
-                    <GridViewColumn Header="Phone" 
-                                    DisplayMemberBinding="{Binding Path=Phone}"
-                                    Width="150"/>
-                    <GridViewColumn Header="Status" Width="150">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <ComboBox ItemsSource="{Binding Source={StaticResource dataFromEnum}}" 
-                                          SelectedItem="{Binding Path=Status}"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Password" 
-                                    DisplayMemberBinding="{Binding Path=Password}"
-                                    Width="150"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <Button Grid.Row="2" Content="Load users" 
-                Command="{Binding AddUsersFromExcelCommand}"
-                Style="{StaticResource commonBtn}"/>
-    </Grid>
+    
+    <Border Background="White" 
+            CornerRadius="12" 
+            Effect="{StaticResource CardShadow}"
+            Padding="30">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Заголовок -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,25">
+                <Border Width="40" Height="40" Background="#0696d7" CornerRadius="20" Margin="0,0,12,0">
+                    <TextBlock Text="📁" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <TextBlock Text="Импорт пользователей из Excel" 
+                          FontSize="22" 
+                          FontWeight="Bold" 
+                          Foreground="#2C3E50"/>
+            </StackPanel>
+            
+            <!-- Контент -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <!-- Кнопка выбора файла -->
+                    <Border BorderBrush="#E0E0E0" 
+                            BorderThickness="1" 
+                            CornerRadius="8" 
+                            Padding="15"
+                            Margin="0,0,0,20"
+                            Background="#F8F9FA">
+                        <StackPanel>
+                            <TextBlock Text="📎 Выберите Excel файл для импорта" 
+                                       FontSize="14" 
+                                       Foreground="#2C3E50"
+                                       FontWeight="SemiBold"
+                                       Margin="0,0,0,10"/>
+                            <Button Content="Выбрать файл" 
+                                    Command="{Binding GetUsersFromExcelCommand}"
+                                    Style="{StaticResource commonBtn}"
+                                    Height="40"
+                                    FontSize="14"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Таблица пользователей -->
+                    <TextBlock Text="Найденные пользователи:" 
+                               FontSize="14" 
+                               Foreground="#2C3E50"
+                               FontWeight="SemiBold"
+                               Margin="0,0,0,10"/>
+                    
+                    <Border BorderBrush="#E0E0E0" 
+                            BorderThickness="1" 
+                            CornerRadius="8"
+                            Margin="0,0,0,15">
+                        <ListView ItemsSource="{Binding UsersFromExcel}" 
+                                  SelectionMode="Multiple"
+                                  SelectionChanged="ListView_SelectionChanged"
+                                  MinHeight="300">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="Padding" Value="10"/>
+                                    <Setter Property="Margin" Value="0,0,0,5"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#E8F4F8"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Имя" DisplayMemberBinding="{Binding FirstName}" Width="120"/>
+                                    <GridViewColumn Header="Фамилия" DisplayMemberBinding="{Binding LastName}" Width="120"/>
+                                    <GridViewColumn Header="Email" DisplayMemberBinding="{Binding Email}" Width="180"/>
+                                    <GridViewColumn Header="Телефон" DisplayMemberBinding="{Binding Phone}" Width="130"/>
+                                    <GridViewColumn Header="Роль" Width="120">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ComboBox ItemsSource="{Binding Source={StaticResource dataFromEnum}}" 
+                                                          SelectedItem="{Binding Status}"
+                                                          FontSize="11"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Пароль" DisplayMemberBinding="{Binding Password}" Width="150"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+            
+            <!-- Кнопки -->
+            <StackPanel Grid.Row="2" 
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Right" 
+                        Margin="0,20,0,0">
+                <Button Content="Отмена" 
+                        Click="CancelButton_Click"
+                        Style="{StaticResource commonBtn}"
+                        Width="100"
+                        Background="#95A5A6"
+                        BorderBrush="#95A5A6"/>
+                <Button Content="➕ Загрузить выбранных" 
+                        Command="{Binding AddUsersFromExcelCommand}"
+                        Style="{StaticResource commonBtn}"
+                        Width="180"
+                        Margin="10,0,0,0"/>
+            </StackPanel>
+        </Grid>
+    </Border>
 </Window>

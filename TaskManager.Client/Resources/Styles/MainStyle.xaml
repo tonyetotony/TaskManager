@@ -166,10 +166,13 @@
     </Style>
     
     <Style TargetType="Border" x:Key="taskPanelBorder" BasedOn="{StaticResource commonPanelBorder}">
-        <Setter Property="Background" Value="#bddeff"></Setter>
+        <Setter Property="Background" Value="White"></Setter>
         <Setter Property="Cursor" Value="Hand"></Setter>
-        <Setter Property="Margin" Value="0,10"></Setter>
+        <Setter Property="Margin" Value="5"></Setter>
         <Setter Property="Padding" Value="0"></Setter>
+        <Setter Property="BorderBrush" Value="#E0E0E0"></Setter>
+        <Setter Property="BorderThickness" Value="1"></Setter>
+        <Setter Property="CornerRadius" Value="12"></Setter>
     </Style>
     
     <Style TargetType="CheckBox" x:Key="commonChBox">
@@ -177,18 +180,20 @@
     </Style>
     
     <Style TargetType="ItemsControl" x:Key="taskColumnPanel">
-        <Setter Property="Background" Value="{StaticResource commonGreenColor}"></Setter>
+        <Setter Property="Background" Value="#F8F9FA"></Setter>
         <Setter Property="Margin" Value="5"></Setter>
-        <Setter Property="BorderBrush" Value="Gray"></Setter>
+        <Setter Property="BorderBrush" Value="#E0E0E0"></Setter>
         <Setter Property="BorderThickness" Value="1"></Setter>
+        <Setter Property="Padding" Value="10"></Setter>
         <Style.Resources>
-            <Style TargetType="{x:Type Border}">
-                <Setter Property="CornerRadius" Value="3"></Setter>
+            <Style TargetType="Border">
+                <Setter Property="CornerRadius" Value="12"></Setter>
             </Style>
         </Style.Resources>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#adcbd9"></Setter>
+                <Setter Property="BorderBrush" Value="#0696d7"></Setter>
+                <Setter Property="Background" Value="#E8F4F8"></Setter>
             </Trigger>
         </Style.Triggers>
     </Style>

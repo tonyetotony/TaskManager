@@ -53,7 +53,11 @@ public class ApplicationContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        // Здесь можно добавлять конфигурации моделей
+        
+        // Настраиваем связь Desk - Task
+        modelBuilder.Entity<Desk>()
+            .HasMany(d => d.Tasks)
+            .WithOne(t => t.Desk)
+            .HasForeignKey(t => t.DeskId);
     }
 }

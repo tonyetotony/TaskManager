@@ -6,9 +6,13 @@
         xmlns:local="clr-namespace:TaskManager.Client.Views.AddWindows"
         xmlns:models="clr-namespace:TaskManager.Common.Models;assembly=TaskManager.Common.Models"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
-
         mc:Ignorable="d"
-        Title="CreateOrUpdateUserWindow" Height="300" Width="350">
+        Title="Пользователь" 
+        Height="600" 
+        Width="450"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F7FA">
+    
     <Window.Resources>
         <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
                             ObjectType="{x:Type system:Enum}">
@@ -16,68 +20,115 @@
                 <x:Type TypeName="models:UserStatus"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
+        
+        <!-- Тень для карточки -->
+        <DropShadowEffect x:Key="CardShadow" 
+                         Direction="270" 
+                         ShadowDepth="5" 
+                         BlurRadius="15" 
+                         Opacity="0.2"/>
     </Window.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="30"/>
-        </Grid.RowDefinitions>
-        <TextBlock Text="User" Style="{StaticResource headerTBlock}"/>
-        <ScrollViewer Grid.Row="1"  
-                      VerticalScrollBarVisibility="Auto">
-            <Grid Margin="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.5*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Name: " 
-                           Style="{StaticResource commonTBlock}" 
-                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedUser.FirstName}" 
-                         Style="{StaticResource commonTBox}" 
-                         HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="LastName: " Style="{StaticResource commonTBlock}" 
-                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedUser.LastName}" 
-                         Style="{StaticResource commonTBox}" 
-                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Phoe: " Style="{StaticResource commonTBlock}" 
-                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedUser.Phone}"
-                         Style="{StaticResource commonTBox}" 
-                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="Почта: " Style="{StaticResource commonTBlock}" 
-                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding SelectedUser.Email}"
-                         Style="{StaticResource commonTBox}" 
-                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="Password: " Style="{StaticResource commonTBlock}" 
-                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding SelectedUser.Password}"
-                         Style="{StaticResource commonTBox}" 
-                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-
-                <TextBlock Grid.Row="5" Grid.Column="0" Text="Status: " Style="{StaticResource commonTBlock}"
-                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <ComboBox  Grid.Row="5" Grid.Column="1" ItemsSource="{Binding Source={StaticResource dataFromEnum}}" 
-                           SelectedItem="{Binding SelectedUser.Status}"/>
-            </Grid>
-        </ScrollViewer>
-        <Button Grid.Row="2" Content="Save" Command="{Binding CreateOrUpdateUserCommand}" 
-                Style="{StaticResource commonBtn}"/>
-    </Grid>
+    
+    <Border Background="White" 
+            CornerRadius="12" 
+            Effect="{StaticResource CardShadow}"
+            Padding="30">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Заголовок -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,25">
+                <Border Width="40" Height="40" Background="#0696d7" CornerRadius="20" Margin="0,0,12,0">
+                    <TextBlock Text="👤" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <TextBlock Text="Создание пользователя" 
+                          FontSize="22" 
+                          FontWeight="Bold" 
+                          Foreground="#2C3E50"/>
+            </StackPanel>
+            
+            <!-- Форма -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <!-- Имя -->
+                    <Label Content="👤 Имя" />
+                    <TextBox Text="{Binding SelectedUser.FirstName}" 
+                             Style="{StaticResource commonTBox}" 
+                             Margin="0,0,0,15"/>
+                    
+                    <!-- Фамилия -->
+                    <Label Content="👥 Фамилия" />
+                    <TextBox Text="{Binding SelectedUser.LastName}" 
+                             Style="{StaticResource commonTBox}" 
+                             Margin="0,0,0,15"/>
+                    
+                    <!-- Email -->
+                    <Label Content="📧 Email" />
+                    <TextBox Text="{Binding SelectedUser.Email}" 
+                             Style="{StaticResource commonTBox}" 
+                             Margin="0,0,0,15"/>
+                    
+                    <!-- Телефон -->
+                    <Label Content="📱 Телефон" />
+                    <TextBox Text="{Binding SelectedUser.Phone}" 
+                             Style="{StaticResource commonTBox}" 
+                             Margin="0,0,0,15"/>
+                    
+                    <!-- Пароль -->
+                    <Label Content="🔒 Пароль" />
+                    <TextBox Text="{Binding SelectedUser.Password}" 
+                             Style="{StaticResource commonTBox}" 
+                             Margin="0,0,0,15"/>
+                    
+                    <!-- Роль -->
+                    <Label Content="🎭 Роль" />
+                    <ComboBox ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
+                              SelectedItem="{Binding SelectedUser.Status}"
+                              Margin="0,0,0,15">
+                        <ComboBox.Style>
+                            <Style TargetType="ComboBox">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentUser.Status}" Value="User">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding CurrentUser.Status}" Value="Editor">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ComboBox.Style>
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" 
+                                           FontSize="13"
+                                           Foreground="#2C3E50"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+            </ScrollViewer>
+            
+            <!-- Кнопки -->
+            <StackPanel Grid.Row="2" 
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Right" 
+                        Margin="0,20,0,0">
+                <Button Content="Отмена" 
+                        Click="CancelButton_Click"
+                        Style="{StaticResource commonBtn}"
+                        Width="100"
+                        Background="#95A5A6"
+                        BorderBrush="#95A5A6"/>
+                <Button Content="Сохранить" 
+                        Command="{Binding CreateOrUpdateUserCommand}"
+                        Style="{StaticResource commonBtn}"
+                        Width="120"
+                        Margin="10,0,0,0"/>
+            </StackPanel>
+        </Grid>
+    </Border>
 </Window>

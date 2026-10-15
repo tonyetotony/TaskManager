@@ -128,10 +128,8 @@
                 <Button Content="✏️ Редактировать профиль" 
                        Style="{StaticResource commonBtn}"
                        Height="40"
-                       Margin="0,0,10,0"/>
-                <Button Content="🔒 Сменить пароль" 
-                       Style="{StaticResource commonBtn}"
-                       Height="40"/>
+                       Margin="0,0,10,0"
+                       Command="{Binding OpenEditProfileCommand}"/>
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

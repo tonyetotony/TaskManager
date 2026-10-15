@@ -7,85 +7,113 @@
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:commonModels="clr-namespace:TaskManager.Common.Models;assembly=TaskManager.Common.Models"
         mc:Ignorable="d"
-        Title="CreateOrUpdateProjectWindow" Height="450" Width="350"
-        WindowStartupLocation="CenterScreen">
+        Title="Проект" 
+        Height="600" 
+        Width="450"
+        WindowStartupLocation="CenterOwner"
+        Background="#F5F7FA">
+    
     <Window.Resources>
         <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
                             ObjectType="{x:Type system:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="commonModels:ProjectStatus"></x:Type>
+                <x:Type TypeName="commonModels:ProjectStatus"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
+        
+        <!-- Тень для карточки -->
+        <DropShadowEffect x:Key="CardShadow" 
+                         Direction="270" 
+                         ShadowDepth="5" 
+                         BlurRadius="15" 
+                         Opacity="0.2"/>
     </Window.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-        </Grid.RowDefinitions>
-        <TextBlock Text="Project" Style="{StaticResource headerTBlock}"></TextBlock>
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <Grid Margin="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="30"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Name: "
-                           Style="{StaticResource commonTBlock}" HorizontalAlignment="Right" />
-                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedProject.Model.Name}"
-                         Style="{StaticResource commonTBox}" />
-
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Description: "
-                           Style="{StaticResource commonTBlock}" HorizontalAlignment="Right" />
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedProject.Model.Description}"
-                         Style="{StaticResource multilineTBox}" />
-
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Photo: "
-                           Style="{StaticResource commonTBlock}" HorizontalAlignment="Right" />
-                <Grid Grid.Row="2" Grid.Column="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="30" />
-                    </Grid.RowDefinitions>
-                    <Image Grid.Row="0" Source="{Binding SelectedProject.Image}" />
-                    <Button Grid.Row="1" Content="Select"
-                            Command="{Binding SelectPhotoForProjectCommand}"
-                            Style="{StaticResource commonBtn}" />
-                </Grid>
-
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="Status: "
-                           Style="{StaticResource commonTBlock}" HorizontalAlignment="Right" />
-                <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
-                          SelectedItem="{Binding SelectedProject.Model.Status}" />
-            </Grid>
-        </ScrollViewer>
-
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="Delete" Command="{Binding DeleteProjectCommand}">
-                <Button.Style>
-                    <Style TargetType="Button" BasedOn="{StaticResource commonBtnRed}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding TypeActionWithProject}" Value="Create">
-                                <Setter Property="Visibility" Value="Hidden"></Setter>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
-            <Button Grid.Column="1" Content="Save" Command="{Binding CreateOrUpdateProjectCommand}"
-                    Style="{StaticResource commonBtn}">
-            </Button>
+    
+    <Border Background="White" 
+            CornerRadius="12" 
+            Effect="{StaticResource CardShadow}"
+            Padding="30">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Заголовок -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,25">
+                <Border Width="40" Height="40" Background="#0696d7" CornerRadius="20" Margin="0,0,12,0">
+                    <TextBlock Text="📁" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <TextBlock Text="Создание проекта" 
+                          FontSize="22" 
+                          FontWeight="Bold" 
+                          Foreground="#2C3E50"/>
+            </StackPanel>
+            
+            <!-- Форма -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <!-- Название -->
+                    <Label Content="📌 Название"/>
+                    <TextBox Text="{Binding SelectedProject.Model.Name}" 
+                             Style="{StaticResource commonTBox}" 
+                             Margin="0,0,0,15"/>
+                    
+                    <!-- Описание -->
+                    <Label Content="📄 Описание" />
+                    <TextBox Text="{Binding SelectedProject.Model.Description}" 
+                             Style="{StaticResource multilineTBox}" 
+                             Margin="0,0,0,15"/>
+                    
+                    <!-- Статус -->
+                    <Label Content="📊 Статус"/>
+                    <ComboBox ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
+                              SelectedItem="{Binding SelectedProject.Model.Status}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" 
+                                           FontSize="13"
+                                           Foreground="#2C3E50"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+            </ScrollViewer>
+            
+            <!-- Кнопки -->
+            <StackPanel Grid.Row="2" 
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Right" 
+                        Margin="0,20,0,0">
+                <Button Content="Отмена" 
+                        Click="CancelButton_Click"
+                        Style="{StaticResource commonBtn}"
+                        Width="100"
+                        Background="#95A5A6"
+                        BorderBrush="#95A5A6"/>
+                <Button Content="Удалить" 
+                        Command="{Binding DeleteProjectCommand}"
+                        Width="100"
+                        Background="#E74C3C"
+                        BorderBrush="#E74C3C"
+                        Visibility="{Binding DeleteButtonVisibility}">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource commonBtn}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding TypeActionWithProject}" Value="Create">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button Content="Сохранить" 
+                        Command="{Binding CreateOrUpdateProjectCommand}"
+                        Style="{StaticResource commonBtn}"
+                        Width="120"
+                        Margin="10,0,0,0"/>
+            </StackPanel>
         </Grid>
-    </Grid>
+    </Border>
 </Window>

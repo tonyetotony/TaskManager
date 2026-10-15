@@ -73,7 +73,13 @@ public class ProjectsPageViewModel : BindableBase
         {
             _typeActionWithProject = value;
             RaisePropertyChanged(nameof(TypeActionWithProject));
+            RaisePropertyChanged(nameof(DeleteButtonVisibility));
         }
+    }
+    
+    public Visibility DeleteButtonVisibility
+    {
+        get => TypeActionWithProject == ClientAction.Create ? Visibility.Collapsed : Visibility.Visible;
     }
     private List<ModelClient<ProjectModel>> _userProjects;
     public List<ModelClient<ProjectModel>> UserProjects
@@ -207,6 +213,13 @@ public class ProjectsPageViewModel : BindableBase
     {
         var resultAction = _projectRequestService.CreateProject(_token, SelectedProject.Model);
         _viewService.ShowActionResult(resultAction, "Project is created");
+        
+        // После создания проекта обновляем его данные (включая ID)
+        if (SelectedProject?.Model != null && SelectedProject.Model.Id > 0)
+        {
+            var createdProject = _projectRequestService.GetProjectById(_token, SelectedProject.Model.Id);
+            SelectedProject = new ModelClient<ProjectModel>(createdProject);
+        }
     }
     
     private void UpdateProject()
@@ -253,8 +266,14 @@ public class ProjectsPageViewModel : BindableBase
         var userIds = SelectedUsersForProject.Select(u => u.Id).ToList();
         var resultAction = _projectRequestService.AddUsersToProject(_token, SelectedProject.Model.Id, userIds);
         _viewService.ShowActionResult(resultAction, "New users is added");
-        UpdatePage();
-       
+        
+        // Обновляем только выбранный проект, а не всю страницу
+        if (SelectedProject != null)
+        {
+            var updatedProject = _projectRequestService.GetProjectById(_token, SelectedProject.Model.Id);
+            SelectedProject = new ModelClient<ProjectModel>(updatedProject);
+            SelectedUsersForProject.Clear();
+        }
     }
 
     private void RemoveUserFromProject(object parameter)

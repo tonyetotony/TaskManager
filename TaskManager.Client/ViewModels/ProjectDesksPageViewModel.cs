@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Windows;
 using TaskManager.Client.Models;
 using TaskManager.Client.Services;
 using TaskManager.Client.Views.AddWindows;
@@ -84,7 +85,13 @@ public class ProjectDesksPageViewModel : BindableBase
         {
             _typeActionWithDesk = value;
             RaisePropertyChanged(nameof(TypeActionWithDesk));
+            RaisePropertyChanged(nameof(DeleteButtonVisibility));
         }
+    }
+    
+    public Visibility DeleteButtonVisibility
+    {
+        get => TypeActionWithDesk == ClientAction.Create ? Visibility.Collapsed : Visibility.Visible;
     }
     
     private ModelClient<DeskModel> _selectedDesk;
@@ -150,6 +157,12 @@ public class ProjectDesksPageViewModel : BindableBase
     
     private void CreateOrUpdateDesk()
     {
+        if (SelectedDesk == null || SelectedDesk.Model == null)
+        {
+            _viewService.ShowMessage("Desk data is not available");
+            return;
+        }
+        
         if (TypeActionWithDesk == ClientAction.Create)
         {
             CreateDesk();   
@@ -180,8 +193,24 @@ public class ProjectDesksPageViewModel : BindableBase
     
     private void DeleteDesk()
     {
-        _desksViewService.DeleteDesk(SelectedDesk.Model.Id);
-        UpdatePage();
+        if (SelectedDesk?.Model?.Id > 0)
+        {
+            var result = MessageBox.Show(
+                $"Are you sure you want to delete desk '{SelectedDesk.Model.Name}'?",
+                "Confirm deletion",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                _desksViewService.DeleteDesk(SelectedDesk.Model.Id);
+                UpdatePage();
+            }
+        }
+        else
+        {
+            _viewService.ShowMessage("Desk ID is not available");
+        }
     }
     
     private void UpdatePage()

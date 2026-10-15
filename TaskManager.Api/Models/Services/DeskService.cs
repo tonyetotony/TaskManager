@@ -70,20 +70,21 @@ public class DeskService : AbstractionService, ICommonService<DeskModel>
     {
         var user = _db.Users.FirstOrDefault(u => u.Id == userId);
         if (user != null && user.Status == UserStatus.Admin)
-            return _db.Desks.Select(d => d.ToDto() as CommonModel);
+            return _db.Desks.Include(d => d.Tasks).Select(d => d.ToDto() as CommonModel);
         
-        return _db.Desks.Where(d=>d.AdminId == userId).Select(d => d.ToDto() as CommonModel);
+        return _db.Desks.Where(d=>d.AdminId == userId).Include(d => d.Tasks).Select(d => d.ToDto() as CommonModel);
     }
 
     public IQueryable<CommonModel> GetProjectDesks(int projectId, int userId)
     {
         var user = _db.Users.FirstOrDefault(u => u.Id == userId);
         if (user != null && user.Status == UserStatus.Admin)
-            return _db.Desks.Where(d => d.ProjectId == projectId).Select(d => d.ToDto() as CommonModel);
+            return _db.Desks.Where(d => d.ProjectId == projectId).Include(d => d.Tasks).Select(d => d.ToDto() as CommonModel);
         
         return _db.Desks.Where(d=> 
                 (d.ProjectId == projectId && 
                  (d.AdminId == userId || d.IsPrivate == false)))
+            .Include(d => d.Tasks)
             .Select(d => d.ToDto() as CommonModel);
     }
 }

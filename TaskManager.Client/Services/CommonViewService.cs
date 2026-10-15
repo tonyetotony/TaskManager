@@ -14,6 +14,16 @@ public class CommonViewService
         MessageBox.Show(message);
     }
 
+    public bool? ShowConfirmDialog(string message)
+    {
+        var result = MessageBox.Show(
+            message,
+            "Подтверждение",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question);
+        return result == MessageBoxResult.Yes;
+    }
+
     public void ShowActionResult(System.Net.HttpStatusCode code, string message)
     {
         if (code == System.Net.HttpStatusCode.OK)

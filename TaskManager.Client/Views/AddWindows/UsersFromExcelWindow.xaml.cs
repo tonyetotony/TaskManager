@@ -16,7 +16,6 @@ public partial class UsersFromExcelWindow : Window
     {
         var context = DataContext as UsersPageViewModel;
 
-
         foreach (var item in e.RemovedItems)
         {
             if (item.GetType() == typeof(UserModel))
@@ -35,6 +34,10 @@ public partial class UsersFromExcelWindow : Window
                 context.SelectedUsersFromExcel.Add(user);
             }
         }
-
+    }
+    
+    private void CancelButton_Click(object sender, RoutedEventArgs e)
+    {
+        this.Close();
     }
 }

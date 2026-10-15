@@ -34,8 +34,8 @@ public class MainWindowViewModel : BindableBase
         OpenMyInfoPageCommand  = new DelegateCommand(OpenMyInfoPage);
         NavButtons.Add(_userInfoBtnName, OpenMyInfoPageCommand);
         
-        OpenMyDesksPageCommand = new DelegateCommand(OpenMyDesksPage);
-        NavButtons.Add(_userDesksBtnName, OpenMyDesksPageCommand);
+        //OpenMyDesksPageCommand = new DelegateCommand(OpenMyDesksPage);
+        //NavButtons.Add(_userDesksBtnName, OpenMyDesksPageCommand);
         
         OpenMyProjectsPageCommand = new DelegateCommand(OpenMyProjectsPage);
         NavButtons.Add(_userProjectsBtnName, OpenMyProjectsPageCommand);
@@ -50,7 +50,7 @@ public class MainWindowViewModel : BindableBase
         }
         
         LogoutCommand = new DelegateCommand(Logout);
-        NavButtons.Add(_logoutBtnName, LogoutCommand);
+        //NavButtons.Add(_logoutBtnName, LogoutCommand);
 
         OpenMyInfoPage();
         
@@ -59,12 +59,12 @@ public class MainWindowViewModel : BindableBase
     
     #region PROPERTIES
 
-    private readonly string _userProjectsBtnName = "My projects";
-    private readonly string _userDesksBtnName = "My desks";
-    private readonly string _userTasksBtnName = "My tasks";
-    private readonly string _userInfoBtnName = "My info";
-    private readonly string _logoutBtnName = "Logout";
-    private readonly string _manageUsersBtnName = "Users";
+    private readonly string _userProjectsBtnName = "Проекты";
+    //private readonly string _userDesksBtnName = "Доски";
+    private readonly string _userTasksBtnName = "Задачи";
+    private readonly string _userInfoBtnName = "Профиль";
+    //private readonly string _logoutBtnName = "Logout";
+    private readonly string _manageUsersBtnName = "Пользователи";
     private Window _currentWindow;
     
     private AuthToken _token;
@@ -134,14 +134,14 @@ public class MainWindowViewModel : BindableBase
     private void OpenMyInfoPage()
     {
         var page = new UserInfoPage();
-        OpenPage(page, _userInfoBtnName, this);
+        OpenPage(page, _userInfoBtnName, new UserInfoPageViewModel(Token));
     }
     
-    private void OpenMyDesksPage()
-    {
-        var page = new UserDesksPage();
-        OpenPage(page, _userDesksBtnName, new UserDesksPageViewModel(Token));
-    }
+    // private void OpenMyDesksPage()
+    // {
+    //     var page = new UserDesksPage();
+    //     OpenPage(page, _userDesksBtnName, new UserDesksPageViewModel(Token));
+    // }
     
     private void OpenMyProjectsPage()
     {
@@ -152,7 +152,7 @@ public class MainWindowViewModel : BindableBase
     private void OpenMyTasksPage()
     {
         var page = new UserTasksPage();
-        OpenPage(page, _userTasksBtnName, new UserTasksPageViewModel(Token));
+        OpenPage(page, _userTasksBtnName, new UserTasksPageViewModel(Token, this));
     }
     
     private void Logout()
