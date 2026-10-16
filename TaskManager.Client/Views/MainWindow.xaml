@@ -121,11 +121,29 @@
                        BorderThickness="0,0,0,1"
                        BorderBrush="#ECF0F1"
                        Padding="20,0">
-                    <TextBlock Text="{Binding SelectedPageName}" 
-                              FontSize="20" 
-                              FontWeight="Bold" 
-                              Foreground="#2C3E50"
-                              VerticalAlignment="Center"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBlock Text="{Binding SelectedPageName}" 
+                                  FontSize="20" 
+                                  FontWeight="Bold" 
+                                  Foreground="#2C3E50"
+                                  VerticalAlignment="Center"/>
+                        
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <TextBlock Text="👤 " 
+                                      FontSize="14"
+                                      Foreground="#7F8C8D"
+                                      VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding CurrentUser.FirstName}" 
+                                      FontSize="14"
+                                      Foreground="#7F8C8D"
+                                      VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
                 </Border>
                 
                 <!-- Контент страницы -->

@@ -133,7 +133,7 @@ public class LoginViewModel : BindableBase
         using (StreamWriter sw = new StreamWriter(_cachePath, false, Encoding.Default))
         {
             sw.Write(jsonUserCache);
-            MessageBox.Show("User cache created successfully");
+            MessageBox.Show("Данные пользователя сохранены");
         }
     }
 

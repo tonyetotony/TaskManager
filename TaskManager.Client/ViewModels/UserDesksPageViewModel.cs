@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Windows;
 using TaskManager.Client.Models;
 using TaskManager.Client.Services;
 using TaskManager.Common.Models;
@@ -84,10 +85,10 @@ public class UserDesksPageViewModel : BindableBase
     
     private ObservableCollection<ColumnBindingHelp> _columnsForNewDesks = new ObservableCollection<ColumnBindingHelp>()
     {
-        new ColumnBindingHelp("New"),
-        new ColumnBindingHelp("In progress"),
-        new ColumnBindingHelp("In review"),
-        new ColumnBindingHelp("Completed")
+        new ColumnBindingHelp("Новые"),
+        new ColumnBindingHelp("В работе"),
+        new ColumnBindingHelp("На проверке"),
+        new ColumnBindingHelp("Выполненные")
 
     };
 
@@ -139,8 +140,25 @@ public class UserDesksPageViewModel : BindableBase
     {
         if (deskId != null)
         {
-            _desksViewService.DeleteDesk((int)deskId);
-            UpdatePage();
+            int deskIdInt = Convert.ToInt32(deskId);
+            if (deskIdInt > 0)
+            {
+                var result = MessageBox.Show(
+                    $"Вы действительно хотите удалить доску?", 
+                    "Подтверждение удаления",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    _desksViewService.DeleteDesk(deskIdInt);
+                    UpdatePage();
+                }
+            }
+            else
+            {
+                _viewService.ShowMessage("ID доски не найден");
+            }
         }
     }
     
@@ -171,7 +189,7 @@ public class UserDesksPageViewModel : BindableBase
     
     private void AddNewColumnItem()
     {
-        ColumnsForNewDesk.Add(new ColumnBindingHelp("New column"));
+        ColumnsForNewDesk.Add(new ColumnBindingHelp("Новая колонка"));
     }
     
     private void RemoveColumnItem(object item)

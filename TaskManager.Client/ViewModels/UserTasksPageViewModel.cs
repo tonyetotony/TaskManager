@@ -76,9 +76,10 @@ public class UserTasksPageViewModel : BindableBase
                 return;
             }
             
-            var page = new ProjectDesksPage();
+            // Открываем страницу с задачами конкретной доски
+            var page = new DeskTasksPage();
             _mainWindowVM?.OpenPage(page, $"Доска: {desk.Name}", 
-                new ProjectDesksPageViewModel(_token, new ProjectModel { Id = desk.ProjectId }, _mainWindowVM));
+                new DeskTasksPageViewModel(_token, desk, page));
         }
         catch (Exception ex)
         {

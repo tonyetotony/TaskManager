@@ -109,10 +109,10 @@ public class ProjectDesksPageViewModel : BindableBase
 
     private ObservableCollection<ColumnBindingHelp> _columnsForNewDesks = new ObservableCollection<ColumnBindingHelp>()
     {
-        new ColumnBindingHelp("New"),
-        new ColumnBindingHelp("In progress"),
-        new ColumnBindingHelp("In review"),
-        new ColumnBindingHelp("Completed")
+        new ColumnBindingHelp("Новые"),
+        new ColumnBindingHelp("В работе"),
+        new ColumnBindingHelp("На проверке"),
+        new ColumnBindingHelp("Выполненные")
 
     };
 
@@ -145,7 +145,7 @@ public class ProjectDesksPageViewModel : BindableBase
         SelectedDesk = _desksViewService.GetDeskClientById(deskId);
         if (CurrentUser.Id != SelectedDesk.Model.AdminId)
         {
-           _viewService.ShowMessage("You are not admin!");
+           _viewService.ShowMessage("Операция доступна только администратору!");
             return; 
         }
  
@@ -165,24 +165,53 @@ public class ProjectDesksPageViewModel : BindableBase
         
         if (TypeActionWithDesk == ClientAction.Create)
         {
-            CreateDesk();   
+            CreateDesk();
+            
         }
-        if (TypeActionWithDesk == ClientAction.Update)
+        else if (TypeActionWithDesk == ClientAction.Update)
         {
             UpdateDesk();
+            UpdatePage();
         }
-        UpdatePage();
-        
     }
     
     private void CreateDesk()
     {
-        SelectedDesk.Model.Columns = ColumnsForNewDesk.Select(c => c.Value).ToArray();
+        
+        if (string.IsNullOrWhiteSpace(SelectedDesk.Model.Name))
+        {
+            MessageBox.Show("Введите название доски", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+        
+        if (ColumnsForNewDesk == null || ColumnsForNewDesk.Count == 0)
+        {
+            MessageBox.Show("Добавьте хотя бы одну колонку", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+        
+        
+        var columnNames = ColumnsForNewDesk.Select(c => c.Value).ToList();
+        if (columnNames.All(string.IsNullOrWhiteSpace))
+        {
+            MessageBox.Show("Заполните названия хотя бы одной колонки", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+        
+        SelectedDesk.Model.Columns = columnNames.ToArray();
         SelectedDesk.Model.ProjectId = _project.Id;
         SelectedDesk.Model.AdminId = _userRequestService.GetCurrentUser(_token).Id;
         
         var resultAction = _desksRequestService.Create(_token, SelectedDesk.Model);
-        _viewService.ShowActionResult(resultAction, "Desk is created");
+        if (resultAction == System.Net.HttpStatusCode.OK)
+        {
+            _viewService.ShowMessage("Доска успешно создана");
+            UpdatePage();
+        }
+        else
+        {
+            _viewService.ShowMessage("Ошибка при создании доски. Проверьте данные.");
+        }
     }
     
     private void UpdateDesk()
@@ -196,7 +225,7 @@ public class ProjectDesksPageViewModel : BindableBase
         if (SelectedDesk?.Model?.Id > 0)
         {
             var result = MessageBox.Show(
-                $"Are you sure you want to delete desk '{SelectedDesk.Model.Name}'?",
+                $"Вы действительно хотите удалить доску '{SelectedDesk.Model.Name}'?",
                 "Confirm deletion",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
@@ -227,7 +256,7 @@ public class ProjectDesksPageViewModel : BindableBase
 
     private void AddNewColumnItem()
     {
-        ColumnsForNewDesk.Add(new ColumnBindingHelp("New column"));
+        ColumnsForNewDesk.Add(new ColumnBindingHelp("Новая колонка"));
     }
     
     private void RemoveColumnItem(object item)
@@ -241,7 +270,7 @@ public class ProjectDesksPageViewModel : BindableBase
         SelectedDesk = _desksViewService.GetDeskClientById(deskId);
         var page = new DeskTasksPage();
         var context = new DeskTasksPageViewModel(_token, SelectedDesk.Model, page);
-        _mainWindowVM.OpenPage(page, $"Task of {SelectedDesk.Model.Name}",context);
+        _mainWindowVM.OpenPage(page, $"Задача {SelectedDesk.Model.Name}",context);
     }
     
 }

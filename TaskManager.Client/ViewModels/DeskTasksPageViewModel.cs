@@ -161,19 +161,26 @@ public class DeskTasksPageViewModel : BindableBase
     {
         if (SelectedTask == null) return;
         
+        
+        if (string.IsNullOrWhiteSpace(SelectedTask.Model.Name))
+        {
+            _viewService.ShowMessage("Введите название задачи");
+            return;
+        }
+        
         SelectedTask.Model.DeskId = _desk.Id;
-        SelectedTask.Model.ExecutorId = SelectedTaskExecutor.Id;
+        SelectedTask.Model.ExecutorId = SelectedTaskExecutor?.Id;
         SelectedTask.Model.Column = _desk.Columns.FirstOrDefault();
         
         var resultAction = _tasksRequestService.Create(_token, SelectedTask.Model);
         if (resultAction == System.Net.HttpStatusCode.OK)
         {
-            _viewService.ShowActionResult(resultAction, "Task is created");
+            _viewService.ShowActionResult(resultAction, "Задача создана");
             UpdatePage();
         }
         else
         {
-            _viewService.ShowMessage("Failed to create task");
+            _viewService.ShowMessage("Ошибка при создании задачи");
         }
     }
     
@@ -187,12 +194,12 @@ public class DeskTasksPageViewModel : BindableBase
         var result = _tasksRequestService.Update(_token, SelectedTask.Model);
         if (result == System.Net.HttpStatusCode.OK)
         {
-            _viewService.ShowMessage("Task is updated");
+            _viewService.ShowMessage("Задача обновлена");
             UpdatePage();
         }
         else
         {
-            _viewService.ShowMessage("Failed to update task");
+            _viewService.ShowMessage("Ошибка при обновлении задачи");
         }
     }
     
@@ -201,7 +208,7 @@ public class DeskTasksPageViewModel : BindableBase
         if (SelectedTask == null) return;
         
         var result = MessageBox.Show(
-            $"Are you sure you want to delete task '{SelectedTask.Model.Name}'?",
+            $"Вы действительно хотите удалить задачу '{SelectedTask.Model.Name}'?",
             "Confirm deletion",
             MessageBoxButton.YesNo,
             MessageBoxImage.Question);
@@ -264,7 +271,7 @@ public class DeskTasksPageViewModel : BindableBase
             var taskClient = e.Data.GetData("TaskData") as TaskClient;
             if (taskClient != null)
             {
-                // Check if task has valid ID
+                
                 if (taskClient.Model.Id == 0)
                 {
                     _viewService.ShowMessage("Task ID is not set. Please save the task first.");
@@ -275,7 +282,7 @@ public class DeskTasksPageViewModel : BindableBase
                 
                 if (oldColumn == targetColumn)
                 {
-                    return; // Task is already in this column
+                    return; 
                 }
 
                 taskClient.Model.Column = targetColumn;
@@ -284,7 +291,7 @@ public class DeskTasksPageViewModel : BindableBase
                 var result = _tasksRequestService.Update(_token, taskClient.Model);
                 if (result == System.Net.HttpStatusCode.OK)
                 {
-                    _viewService.ShowMessage($"Task moved from '{oldColumn}' to '{targetColumn}'");
+                    //_viewService.ShowMessage($"Task moved from '{oldColumn}' to '{targetColumn}'");
                     UpdatePage();
                 }
                 else
@@ -359,7 +366,7 @@ public class DeskTasksPageViewModel : BindableBase
             
             grid.Children.Add(header);
             
-            //column with scroll and drop zone
+            
             var columnBorder = new Border
             {
                 BorderBrush = new SolidColorBrush(Color.FromRgb(224, 224, 224)),
@@ -378,7 +385,7 @@ public class DeskTasksPageViewModel : BindableBase
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
             };
 
-            // Add drag-drop events to the column
+            
             columnBorder.AllowDrop = true;
             columnBorder.Drop += (s, e) => HandleTaskDrop(s, e, column.Key);
             columnBorder.MouseEnter += ColumnBorder_MouseEnter;

@@ -39,13 +39,13 @@ public class UserInfoPageViewModel : BindableBase
         var wnd = new CreateOrUpdateUserWindow();
         wnd.DataContext = viewModel;
         
-        // Передаём окно в viewModel для закрытия после сохранения
+        
         viewModel.WindowToClose = wnd;
         
-        // Подписываемся на событие закрытия окна
+        
         wnd.Closed += (s, e) =>
         {
-            // Перезагружаем данные текущего пользователя
+            
             CurrentUser = _usersRequestService.GetCurrentUser(_token);
             RaisePropertyChanged(nameof(CurrentUser));
         };

@@ -14,7 +14,6 @@ public class Project: CommonObject
 
     public Project(ProjectModel projectModel) : base(projectModel)
     {
-        //Id = projectModel.Id;
         AdminId = projectModel.AdminId;
         Status = projectModel.Status ?? ProjectStatus.InProgress;
     }

@@ -149,6 +149,28 @@ public class UsersPageViewModel : BindableBase
         }
         private void CreateOrUpdateUser()
         {
+            
+            if (string.IsNullOrWhiteSpace(SelectedUser.FirstName))
+            {
+                _viewService.ShowMessage("Введите имя пользователя");
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(SelectedUser.LastName))
+            {
+                _viewService.ShowMessage("Введите фамилию пользователя");
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(SelectedUser.Email))
+            {
+                _viewService.ShowMessage("Введите email пользователя");
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(SelectedUser.Password))
+            {
+                _viewService.ShowMessage("Введите пароль пользователя");
+                return;
+            }
+            
             if (TypeActionWithUser == ClientAction.Create)
             {
                 _usersRequestService.CreateUser(_token, SelectedUser);
@@ -158,7 +180,7 @@ public class UsersPageViewModel : BindableBase
                 _usersRequestService.UpdateUser(_token, SelectedUser);
             }
             
-            // Закрываем окно после сохранения
+            
             WindowToClose?.Close();
             
             UpdatePage();
@@ -188,7 +210,7 @@ public class UsersPageViewModel : BindableBase
             if(SelectedUsersFromExcel != null && SelectedUsersFromExcel.Count > 0)
             {
                 var result = _usersRequestService.CreateUsers(_token, SelectedUsersFromExcel);
-                _viewService.ShowActionResult(result, "All users are created");
+                _viewService.ShowActionResult(result, "Все пользователи созданы");
                 UpdatePage();
             }
         }

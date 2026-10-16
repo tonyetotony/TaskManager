@@ -157,7 +157,7 @@ public class MainWindowViewModel : BindableBase
     
     private void Logout()
     {
-        var question = MessageBox.Show("Are you sure you want to logout?", "Logout", MessageBoxButton.YesNo);
+        var question = MessageBox.Show("Вы действительно хотите выйти?", "Logout", MessageBoxButton.YesNo);
         if (question == MessageBoxResult.Yes && _currentWindow != null)
         {
             Login login = new Login();

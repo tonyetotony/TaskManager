@@ -211,10 +211,17 @@ public class ProjectsPageViewModel : BindableBase
     
     private void CreateProject()
     {
-        var resultAction = _projectRequestService.CreateProject(_token, SelectedProject.Model);
-        _viewService.ShowActionResult(resultAction, "Project is created");
+        // Валидация полей
+        if (string.IsNullOrWhiteSpace(SelectedProject.Model.Name))
+        {
+            _viewService.ShowMessage("Введите название проекта");
+            return;
+        }
         
-        // После создания проекта обновляем его данные (включая ID)
+        var resultAction = _projectRequestService.CreateProject(_token, SelectedProject.Model);
+        _viewService.ShowActionResult(resultAction, "Проект создан!");
+        
+        
         if (SelectedProject?.Model != null && SelectedProject.Model.Id > 0)
         {
             var createdProject = _projectRequestService.GetProjectById(_token, SelectedProject.Model.Id);
@@ -225,13 +232,13 @@ public class ProjectsPageViewModel : BindableBase
     private void UpdateProject()
     {
         var resultAction = _projectRequestService.UpdateProject(_token, SelectedProject.Model);
-        _viewService.ShowActionResult(resultAction, "Project is updated");
+        _viewService.ShowActionResult(resultAction, "Проект обновлен!");
     }
     
     private void DeleteProject()
     {
         var resultAction = _projectRequestService.DeleteProject(_token, SelectedProject.Model.Id);
-        _viewService.ShowActionResult(resultAction, "Project is deleted");
+        _viewService.ShowActionResult(resultAction, "Проект удален!");
         UpdatePage();
     }
 
@@ -259,15 +266,15 @@ public class ProjectsPageViewModel : BindableBase
     {
         if (SelectedUsersForProject == null || SelectedUsersForProject.Count == 0)
         {
-            _viewService.ShowMessage("Select users");
+            _viewService.ShowMessage("Выберите пользователей");
             return;
         }
             
         var userIds = SelectedUsersForProject.Select(u => u.Id).ToList();
         var resultAction = _projectRequestService.AddUsersToProject(_token, SelectedProject.Model.Id, userIds);
-        _viewService.ShowActionResult(resultAction, "New users is added");
+        _viewService.ShowActionResult(resultAction, "Новые пользователи добавлены");
         
-        // Обновляем только выбранный проект, а не всю страницу
+        
         if (SelectedProject != null)
         {
             var updatedProject = _projectRequestService.GetProjectById(_token, SelectedProject.Model.Id);
@@ -281,7 +288,7 @@ public class ProjectsPageViewModel : BindableBase
         if (parameter is UserModel userToRemove && SelectedProject != null)
         {
             var result = MessageBox.Show(
-                $"Are you sure you want to remove {userToRemove.Email} from the project?",
+                $"Вы действительно хотите удалить {userToRemove.Email} из проекта?",
                 "Confirm removal",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
@@ -293,7 +300,7 @@ public class ProjectsPageViewModel : BindableBase
                     SelectedProject.Model.Id,
                     new List<int> { userToRemove.Id });
 
-                _viewService.ShowActionResult(actionResult, "User removed from project");
+                _viewService.ShowActionResult(actionResult, "Пользователь удален из проекта");
                 UpdatePage();
             }
         }
@@ -311,7 +318,7 @@ public class ProjectsPageViewModel : BindableBase
         if (SelectedProject?.Model != null)
         {
             var page = new ProjectDesksPage();
-            _mainWindowVM.OpenPage(page, $"Desk of {SelectedProject.Model.Name}", new ProjectDesksPageViewModel(_token, SelectedProject.Model, _mainWindowVM));
+            _mainWindowVM.OpenPage(page, $"Доска {SelectedProject.Model.Name}", new ProjectDesksPageViewModel(_token, SelectedProject.Model, _mainWindowVM));
         }
     }
     
